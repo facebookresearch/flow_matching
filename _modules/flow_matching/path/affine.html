@@ -1,0 +1,689 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>flow_matching.path.affine &#8212; Flow Matching  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8df2c9d7" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/katex-math.css?v=91adb8b6" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/katex.min.js?v=be8ff15f"></script>
+    <script src="../../../_static/auto-render.min.js?v=ad136472"></script>
+    <script src="../../../_static/katex_autorenderer.js?v=bebc588a"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/flow_matching/path/affine';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Flow Matching  documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../modules.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../notebooks.html">
+    Notebooks
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../references.html">
+    References
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../modules.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../notebooks.html">
+    Notebooks
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../references.html">
+    References
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">flow_matching.path.affine</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for flow_matching.path.affine</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) Meta Platforms, Inc. and affiliates.</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This source code is licensed under the CC-by-NC license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+
+<span class="kn">from</span> <span class="nn">flow_matching.path.path</span> <span class="kn">import</span> <span class="n">ProbPath</span>
+<span class="kn">from</span> <span class="nn">flow_matching.path.path_sample</span> <span class="kn">import</span> <span class="n">PathSample</span>
+<span class="kn">from</span> <span class="nn">flow_matching.path.scheduler.scheduler</span> <span class="kn">import</span> <span class="n">CondOTScheduler</span><span class="p">,</span> <span class="n">Scheduler</span>
+<span class="kn">from</span> <span class="nn">flow_matching.utils</span> <span class="kn">import</span> <span class="n">expand_tensor_like</span>
+
+
+<div class="viewcode-block" id="AffineProbPath">
+<a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath">[docs]</a>
+<span class="k">class</span> <span class="nc">AffineProbPath</span><span class="p">(</span><span class="n">ProbPath</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The ``AffineProbPath`` class represents a specific type of probability path where the transformation between distributions is affine.</span>
+<span class="sd">    An affine transformation can be represented as:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        X_t = \alpha_t X_1 + \sigma_t X_0,</span>
+
+<span class="sd">    where :math:`X_t` is the transformed data point at time `t`. :math:`X_0` and :math:`X_1` are the source and target data points, respectively. :math:`\alpha_t` and :math:`\sigma_t` are the parameters of the affine transformation at time `t`.</span>
+
+<span class="sd">    The scheduler is responsible for providing the time-dependent parameters :math:`\alpha_t` and :math:`\sigma_t`, as well as their derivatives, which define the affine transformation at any given time `t`.</span>
+
+<span class="sd">    Using ``AffineProbPath`` in the flow matching framework:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        # Instantiates a probability path</span>
+<span class="sd">        my_path = AffineProbPath(...)</span>
+<span class="sd">        mse_loss = torch.nn.MSELoss()</span>
+
+<span class="sd">        for x_1 in dataset:</span>
+<span class="sd">            # Sets x_0 to random noise</span>
+<span class="sd">            x_0 = torch.randn()</span>
+
+<span class="sd">            # Sets t to a random value in [0,1]</span>
+<span class="sd">            t = torch.rand()</span>
+
+<span class="sd">            # Samples the conditional path X_t ~ p_t(X_t|X_0,X_1)</span>
+<span class="sd">            path_sample = my_path.sample(x_0=x_0, x_1=x_1, t=t)</span>
+
+<span class="sd">            # Computes the MSE loss w.r.t. the velocity</span>
+<span class="sd">            loss = mse_loss(path_sample.dx_t, my_model(x_t, t))</span>
+<span class="sd">            loss.backward()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scheduler (Scheduler): An instance of a scheduler that provides the parameters :math:`\alpha_t`, :math:`\sigma_t`, and their derivatives over time.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">:</span> <span class="n">Scheduler</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">scheduler</span>
+
+<div class="viewcode-block" id="AffineProbPath.sample">
+<a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath.sample">[docs]</a>
+    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PathSample</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sample from the affine probability path:</span>
+
+<span class="sd">        | given :math:`(X_0,X_1) \sim \pi(X_0,X_1)` and a scheduler :math:`(\alpha_t,\sigma_t)`.</span>
+<span class="sd">        | return :math:`X_0, X_1, X_t = \alpha_t X_1 + \sigma_t X_0`, and the conditional velocity at :math:`X_t, \dot{X}_t = \dot{\alpha}_t X_1 + \dot{\sigma}_t X_0`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x_0 (Tensor): source data point, shape (Batch, ...).</span>
+<span class="sd">            x_1 (Tensor): target data point, shape (Batch, ...).</span>
+<span class="sd">            t (Tensor, optional): times in [0,1], shape (Batch).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            PathSample: a conditional sample at :math:`X_t \sim p_t`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_sample_shape</span><span class="p">(</span><span class="n">x_0</span><span class="o">=</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="o">=</span><span class="n">x_1</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="n">scheduler_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">expand_tensor_like</span><span class="p">(</span>
+                <span class="n">input_tensor</span><span class="o">=</span><span class="n">scheduler_output</span><span class="o">.</span><span class="n">alpha_t</span><span class="p">,</span> <span class="n">expand_to</span><span class="o">=</span><span class="n">x_1</span>
+            <span class="p">)</span>
+            <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">expand_tensor_like</span><span class="p">(</span>
+                <span class="n">input_tensor</span><span class="o">=</span><span class="n">scheduler_output</span><span class="o">.</span><span class="n">sigma_t</span><span class="p">,</span> <span class="n">expand_to</span><span class="o">=</span><span class="n">x_1</span>
+            <span class="p">)</span>
+            <span class="n">d_alpha_t</span> <span class="o">=</span> <span class="n">expand_tensor_like</span><span class="p">(</span>
+                <span class="n">input_tensor</span><span class="o">=</span><span class="n">scheduler_output</span><span class="o">.</span><span class="n">d_alpha_t</span><span class="p">,</span> <span class="n">expand_to</span><span class="o">=</span><span class="n">x_1</span>
+            <span class="p">)</span>
+            <span class="n">d_sigma_t</span> <span class="o">=</span> <span class="n">expand_tensor_like</span><span class="p">(</span>
+                <span class="n">input_tensor</span><span class="o">=</span><span class="n">scheduler_output</span><span class="o">.</span><span class="n">d_sigma_t</span><span class="p">,</span> <span class="n">expand_to</span><span class="o">=</span><span class="n">x_1</span>
+            <span class="p">)</span>
+
+        <span class="c1"># construct xt ~ p_t(x|x1).</span>
+        <span class="n">x_t</span> <span class="o">=</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="n">x_0</span> <span class="o">+</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="n">x_1</span>
+        <span class="n">dx_t</span> <span class="o">=</span> <span class="n">d_sigma_t</span> <span class="o">*</span> <span class="n">x_0</span> <span class="o">+</span> <span class="n">d_alpha_t</span> <span class="o">*</span> <span class="n">x_1</span>
+
+        <span class="k">return</span> <span class="n">PathSample</span><span class="p">(</span><span class="n">x_t</span><span class="o">=</span><span class="n">x_t</span><span class="p">,</span> <span class="n">dx_t</span><span class="o">=</span><span class="n">dx_t</span><span class="p">,</span> <span class="n">x_1</span><span class="o">=</span><span class="n">x_1</span><span class="p">,</span> <span class="n">x_0</span><span class="o">=</span><span class="n">x_0</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AffineProbPath.target_to_velocity">
+<a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath.target_to_velocity">[docs]</a>
+    <span class="k">def</span> <span class="nf">target_to_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert from x_1 representation to velocity.</span>
+
+<span class="sd">        | given :math:`X_1`.</span>
+<span class="sd">        | return :math:`\dot{X}_t`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x_1 (Tensor): target data point.</span>
+<span class="sd">            x_t (Tensor): path sample at time t.</span>
+<span class="sd">            t (Tensor): time in [0,1].</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tensor: velocity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scheduler_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">alpha_t</span>
+        <span class="n">d_alpha_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">d_alpha_t</span>
+        <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">sigma_t</span>
+        <span class="n">d_sigma_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">d_sigma_t</span>
+
+        <span class="n">a_t</span> <span class="o">=</span> <span class="n">d_sigma_t</span> <span class="o">/</span> <span class="n">sigma_t</span>
+        <span class="n">b_t</span> <span class="o">=</span> <span class="p">(</span><span class="n">d_alpha_t</span> <span class="o">*</span> <span class="n">sigma_t</span> <span class="o">-</span> <span class="n">d_sigma_t</span> <span class="o">*</span> <span class="n">alpha_t</span><span class="p">)</span> <span class="o">/</span> <span class="n">sigma_t</span>
+
+        <span class="k">return</span> <span class="n">a_t</span> <span class="o">*</span> <span class="n">x_t</span> <span class="o">+</span> <span class="n">b_t</span> <span class="o">*</span> <span class="n">x_1</span></div>
+
+
+<div class="viewcode-block" id="AffineProbPath.epsilon_to_velocity">
+<a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath.epsilon_to_velocity">[docs]</a>
+    <span class="k">def</span> <span class="nf">epsilon_to_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert from epsilon representation to velocity.</span>
+
+<span class="sd">        | given :math:`\epsilon`.</span>
+<span class="sd">        | return :math:`\dot{X}_t`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            epsilon (Tensor): noise in the path sample.</span>
+<span class="sd">            x_t (Tensor): path sample at time t.</span>
+<span class="sd">            t (Tensor): time in [0,1].</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tensor: velocity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scheduler_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">alpha_t</span>
+        <span class="n">d_alpha_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">d_alpha_t</span>
+        <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">sigma_t</span>
+        <span class="n">d_sigma_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">d_sigma_t</span>
+
+        <span class="n">a_t</span> <span class="o">=</span> <span class="n">d_alpha_t</span> <span class="o">/</span> <span class="n">alpha_t</span>
+        <span class="n">b_t</span> <span class="o">=</span> <span class="p">(</span><span class="n">d_sigma_t</span> <span class="o">*</span> <span class="n">alpha_t</span> <span class="o">-</span> <span class="n">d_alpha_t</span> <span class="o">*</span> <span class="n">sigma_t</span><span class="p">)</span> <span class="o">/</span> <span class="n">alpha_t</span>
+
+        <span class="k">return</span> <span class="n">a_t</span> <span class="o">*</span> <span class="n">x_t</span> <span class="o">+</span> <span class="n">b_t</span> <span class="o">*</span> <span class="n">epsilon</span></div>
+
+
+<div class="viewcode-block" id="AffineProbPath.velocity_to_target">
+<a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath.velocity_to_target">[docs]</a>
+    <span class="k">def</span> <span class="nf">velocity_to_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velocity</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert from velocity to x_1 representation.</span>
+
+<span class="sd">        | given :math:`\dot{X}_t`.</span>
+<span class="sd">        | return :math:`X_1`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            velocity (Tensor): velocity at the path sample.</span>
+<span class="sd">            x_t (Tensor): path sample at time t.</span>
+<span class="sd">            t (Tensor): time in [0,1].</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tensor: target data point.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scheduler_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">alpha_t</span>
+        <span class="n">d_alpha_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">d_alpha_t</span>
+        <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">sigma_t</span>
+        <span class="n">d_sigma_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">d_sigma_t</span>
+
+        <span class="n">a_t</span> <span class="o">=</span> <span class="o">-</span><span class="n">d_sigma_t</span> <span class="o">/</span> <span class="p">(</span><span class="n">d_alpha_t</span> <span class="o">*</span> <span class="n">sigma_t</span> <span class="o">-</span> <span class="n">d_sigma_t</span> <span class="o">*</span> <span class="n">alpha_t</span><span class="p">)</span>
+        <span class="n">b_t</span> <span class="o">=</span> <span class="n">sigma_t</span> <span class="o">/</span> <span class="p">(</span><span class="n">d_alpha_t</span> <span class="o">*</span> <span class="n">sigma_t</span> <span class="o">-</span> <span class="n">d_sigma_t</span> <span class="o">*</span> <span class="n">alpha_t</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">a_t</span> <span class="o">*</span> <span class="n">x_t</span> <span class="o">+</span> <span class="n">b_t</span> <span class="o">*</span> <span class="n">velocity</span></div>
+
+
+<div class="viewcode-block" id="AffineProbPath.epsilon_to_target">
+<a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath.epsilon_to_target">[docs]</a>
+    <span class="k">def</span> <span class="nf">epsilon_to_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert from epsilon representation to x_1 representation.</span>
+
+<span class="sd">        | given :math:`\epsilon`.</span>
+<span class="sd">        | return :math:`X_1`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            epsilon (Tensor): noise in the path sample.</span>
+<span class="sd">            x_t (Tensor): path sample at time t.</span>
+<span class="sd">            t (Tensor): time in [0,1].</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tensor: target data point.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scheduler_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">alpha_t</span>
+        <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">sigma_t</span>
+
+        <span class="n">a_t</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">alpha_t</span>
+        <span class="n">b_t</span> <span class="o">=</span> <span class="o">-</span><span class="n">sigma_t</span> <span class="o">/</span> <span class="n">alpha_t</span>
+
+        <span class="k">return</span> <span class="n">a_t</span> <span class="o">*</span> <span class="n">x_t</span> <span class="o">+</span> <span class="n">b_t</span> <span class="o">*</span> <span class="n">epsilon</span></div>
+
+
+<div class="viewcode-block" id="AffineProbPath.velocity_to_epsilon">
+<a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath.velocity_to_epsilon">[docs]</a>
+    <span class="k">def</span> <span class="nf">velocity_to_epsilon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velocity</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert from velocity to noise representation.</span>
+
+<span class="sd">        | given :math:`\dot{X}_t`.</span>
+<span class="sd">        | return :math:`\epsilon`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            velocity (Tensor): velocity at the path sample.</span>
+<span class="sd">            x_t (Tensor): path sample at time t.</span>
+<span class="sd">            t (Tensor): time in [0,1].</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tensor: noise in the path sample.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scheduler_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">alpha_t</span>
+        <span class="n">d_alpha_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">d_alpha_t</span>
+        <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">sigma_t</span>
+        <span class="n">d_sigma_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">d_sigma_t</span>
+
+        <span class="n">a_t</span> <span class="o">=</span> <span class="o">-</span><span class="n">d_alpha_t</span> <span class="o">/</span> <span class="p">(</span><span class="n">d_sigma_t</span> <span class="o">*</span> <span class="n">alpha_t</span> <span class="o">-</span> <span class="n">d_alpha_t</span> <span class="o">*</span> <span class="n">sigma_t</span><span class="p">)</span>
+        <span class="n">b_t</span> <span class="o">=</span> <span class="n">alpha_t</span> <span class="o">/</span> <span class="p">(</span><span class="n">d_sigma_t</span> <span class="o">*</span> <span class="n">alpha_t</span> <span class="o">-</span> <span class="n">d_alpha_t</span> <span class="o">*</span> <span class="n">sigma_t</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">a_t</span> <span class="o">*</span> <span class="n">x_t</span> <span class="o">+</span> <span class="n">b_t</span> <span class="o">*</span> <span class="n">velocity</span></div>
+
+
+<div class="viewcode-block" id="AffineProbPath.target_to_epsilon">
+<a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath.target_to_epsilon">[docs]</a>
+    <span class="k">def</span> <span class="nf">target_to_epsilon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert from x_1 representation to velocity.</span>
+
+<span class="sd">        | given :math:`X_1`.</span>
+<span class="sd">        | return :math:`\epsilon`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x_1 (Tensor): target data point.</span>
+<span class="sd">            x_t (Tensor): path sample at time t.</span>
+<span class="sd">            t (Tensor): time in [0,1].</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tensor: noise in the path sample.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scheduler_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">alpha_t</span>
+        <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">scheduler_output</span><span class="o">.</span><span class="n">sigma_t</span>
+
+        <span class="n">a_t</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sigma_t</span>
+        <span class="n">b_t</span> <span class="o">=</span> <span class="o">-</span><span class="n">alpha_t</span> <span class="o">/</span> <span class="n">sigma_t</span>
+
+        <span class="k">return</span> <span class="n">a_t</span> <span class="o">*</span> <span class="n">x_t</span> <span class="o">+</span> <span class="n">b_t</span> <span class="o">*</span> <span class="n">x_1</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CondOTProbPath">
+<a class="viewcode-back" href="../../../generated/flow_matching.path.CondOTProbPath.html#flow_matching.path.CondOTProbPath">[docs]</a>
+<span class="k">class</span> <span class="nc">CondOTProbPath</span><span class="p">(</span><span class="n">AffineProbPath</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The ``CondOTProbPath`` class represents a conditional optimal transport probability path.</span>
+
+<span class="sd">    This class is a specialized version of the ``AffineProbPath`` that uses a conditional optimal transport scheduler to determine the parameters of the affine transformation.</span>
+
+<span class="sd">    The parameters :math:`\alpha_t` and :math:`\sigma_t` for the conditional optimal transport path are defined as:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \alpha_t = t \quad \text{and} \quad \sigma_t = 1 - t.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">CondOTScheduler</span><span class="p">()</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, FAIR.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
