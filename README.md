@@ -2,7 +2,7 @@
 
 # Flow Matching
 
-[![arXiv](https://github.com/facebookresearch/flow_matching/assets/arxiv_badge.svg)](https://arxiv.org/abs/2412.06264)
+[![arXiv](https://github.com/facebookresearch/flow_matching/assets/arXiv-2412.06264-red.svg)](https://arxiv.org/abs/2412.06264)
 [![CI](https://github.com/facebookresearch/flow_matching/actions/workflows/ci.yaml/badge.svg)](https://github.com/facebookresearch/flow_matching/actions/workflows/ci.yaml)
 [![Coverage](https://github.com/facebookresearch/flow_matching/raw/refs/heads/gh-pages/coverage/coverage-badge.svg)](https://stunning-potato-4k4z71e.pages.github.io/coverage/)
 [![License: CC BY-NC 4.0](https://github.com/facebookresearch/flow_matching/assets/License-CC_BY--NC_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
