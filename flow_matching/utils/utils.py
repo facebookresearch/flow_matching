@@ -50,7 +50,7 @@ def expand_tensor_like(input_tensor: Tensor, expand_to: Tensor) -> Tensor:
         Tensor: (B, ...).
     """
     assert input_tensor.ndim == 1, "Input tensor must be a 1d vector."
-    assert input_tensor.shape[0] == expand_to.shape[0], f"The first (batch) dimensions must match. Got shape {input_tensor.shape} and {expand_to.shape}."
+    assert input_tensor.shape[0] == expand_to.shape[0], f"The first (batch) dimension must match. Got shape {input_tensor.shape} and {expand_to.shape}."
 
     dim_diff = expand_to.ndim - input_tensor.ndim
 
