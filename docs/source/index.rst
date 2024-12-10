@@ -29,5 +29,5 @@ Code index
 Legal
 -----------------
 
-- [Terms of Use](https://opensource.fb.com/legal/terms)
-- [Privacy Policy](https://opensource.fb.com/legal/privacy)
+* `Terms of Use <https://opensource.fb.com/legal/terms>`_
+* `Privacy Policy <https://opensource.fb.com/legal/privacy>`_
