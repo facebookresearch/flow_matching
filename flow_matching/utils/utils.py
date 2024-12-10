@@ -43,14 +43,16 @@ def expand_tensor_like(input_tensor: Tensor, expand_to: Tensor) -> Tensor:
     expand `input_tensor` to have the same shape as `expand_to` along all remaining dimensions.
 
     Args:
-        input_tensor (Tensor): (B,).
-        expand_to (Tensor): (B, ...).
+        input_tensor (Tensor): (batch_size,).
+        expand_to (Tensor): (batch_size, ...).
 
     Returns:
-        Tensor: (B, ...).
+        Tensor: (batch_size, ...).
     """
     assert input_tensor.ndim == 1, "Input tensor must be a 1d vector."
-    assert input_tensor.shape[0] == expand_to.shape[0], f"The first (batch) dimension must match. Got shape {input_tensor.shape} and {expand_to.shape}."
+    assert (
+        input_tensor.shape[0] == expand_to.shape[0]
+    ), f"The first (batch_size) dimension must match. Got shape {input_tensor.shape} and {expand_to.shape}."
 
     dim_diff = expand_to.ndim - input_tensor.ndim
 
