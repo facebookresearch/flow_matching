@@ -61,9 +61,9 @@ class AffineProbPath(ProbPath):
         | return :math:`X_0, X_1, X_t = \alpha_t X_1 + \sigma_t X_0`, and the conditional velocity at :math:`X_t, \dot{X}_t = \dot{\alpha}_t X_1 + \dot{\sigma}_t X_0`.
 
         Args:
-            x_0 (Tensor): source data point, shape (Batch, ...).
-            x_1 (Tensor): target data point, shape (Batch, ...).
-            t (Tensor, optional): times in [0,1], shape (Batch).
+            x_0 (Tensor): source data point, shape (batch_size, ...).
+            x_1 (Tensor): target data point, shape (batch_size, ...).
+            t (Tensor): times in [0,1], shape (batch_size).
 
         Returns:
             PathSample: a conditional sample at :math:`X_t \sim p_t`.
@@ -72,19 +72,20 @@ class AffineProbPath(ProbPath):
 
         scheduler_output = self.scheduler(t)
 
-        if t.ndim == 1:
-            alpha_t = expand_tensor_like(
-                input_tensor=scheduler_output.alpha_t, expand_to=x_1
-            )
-            sigma_t = expand_tensor_like(
-                input_tensor=scheduler_output.sigma_t, expand_to=x_1
-            )
-            d_alpha_t = expand_tensor_like(
-                input_tensor=scheduler_output.d_alpha_t, expand_to=x_1
-            )
-            d_sigma_t = expand_tensor_like(
-                input_tensor=scheduler_output.d_sigma_t, expand_to=x_1
-            )
+        assert t.ndim == 1, f"The time vector t must be one of shape [batch_size]. Got {t.shape}"
+
+        alpha_t = expand_tensor_like(
+            input_tensor=scheduler_output.alpha_t, expand_to=x_1
+        )
+        sigma_t = expand_tensor_like(
+            input_tensor=scheduler_output.sigma_t, expand_to=x_1
+        )
+        d_alpha_t = expand_tensor_like(
+            input_tensor=scheduler_output.d_alpha_t, expand_to=x_1
+        )
+        d_sigma_t = expand_tensor_like(
+            input_tensor=scheduler_output.d_sigma_t, expand_to=x_1
+        )
 
         # construct xt ~ p_t(x|x1).
         x_t = sigma_t * x_0 + alpha_t * x_1
