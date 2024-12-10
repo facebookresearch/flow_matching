@@ -12,7 +12,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "Flow Matching"
-copyright = "2024, FAIR"
+copyright = "2024 Meta Platforms, Inc"
 author = "FAIR"
 
 # -- General configuration ---------------------------------------------------
