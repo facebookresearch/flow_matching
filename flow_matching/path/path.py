@@ -44,15 +44,18 @@ class ProbPath(ABC):
         | returns :math:`X_0, X_1, X_t \sim p_t(X_t)`, and a conditional target :math:`Y`, all objects are under ``PathSample``.
 
         Args:
-            x_0 (Tensor): source data point, shape (Batch, ...).
-            x_1 (Tensor): target data point, shape (Batch, ...).
-            t (Tensor, optional): times in [0,1], shape (Batch).
+            x_0 (Tensor): source data point, shape (batch_size, ...).
+            x_1 (Tensor): target data point, shape (batch_size, ...).
+            t (Tensor): times in [0,1], shape (batch_size).
 
         Returns:
             PathSample: a conditional sample.
         """
 
     def assert_sample_shape(self, x_0: Tensor, x_1: Tensor, t: Tensor):
+        assert (
+            t.ndim == 1
+        ), f"The time vector t must be one of shape [batch_size]. Got {t.shape}."
         assert (
             t.shape[0] == x_0.shape[0] == x_1.shape[0]
         ), f"Time t dimension must match the batch size [{x_1.shape[0]}]. Got {t.shape}"

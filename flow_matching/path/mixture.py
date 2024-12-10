@@ -70,9 +70,9 @@ class MixtureDiscreteProbPath(ProbPath):
             | given :math:`(X_0,X_1) \sim \pi(X_0,X_1)` and a scheduler :math:`(\alpha_t,\sigma_t)`.
             | return :math:`X_0, X_1, t`, and :math:`X_t \sim p_t`.
         Args:
-            x_0 (Tensor): source data point, shape (Batch, ...).
-            x_1 (Tensor): target data point, shape (Batch, ...).
-            t (Tensor): times in [0,1], shape (Batch).
+            x_0 (Tensor): source data point, shape (batch_size, ...).
+            x_1 (Tensor): target data point, shape (batch_size, ...).
+            t (Tensor): times in [0,1], shape (batch_size).
 
         Returns:
             DiscretePathSample: a conditional sample at :math:`X_t ~ p_t`.
@@ -81,8 +81,7 @@ class MixtureDiscreteProbPath(ProbPath):
 
         sigma_t = self.scheduler(t).sigma_t
 
-        if t.ndim == 1:
-            sigma_t = expand_tensor_like(input_tensor=sigma_t, expand_to=x_1)
+        sigma_t = expand_tensor_like(input_tensor=sigma_t, expand_to=x_1)
 
         source_indices = torch.rand(size=x_1.shape, device=x_1.device) < sigma_t
         x_t = torch.where(condition=source_indices, input=x_0, other=x_1)

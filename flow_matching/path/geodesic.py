@@ -74,17 +74,15 @@ class GeodesicProbPath(ProbPath):
         | return :math:`X_0, X_1, X_t = \exp_{X_1}(\kappa_t \log_{X_1}(X_0))`, and the conditional velocity at :math:`X_t, \dot{X}_t`.
 
         Args:
-            x_0 (Tensor): source data point, shape (Batch, ...).
-            x_1 (Tensor): target data point, shape (Batch, ...).
-            t (Tensor, optional): times in [0,1], shape (Batch).
+            x_0 (Tensor): source data point, shape (batch_size, ...).
+            x_1 (Tensor): target data point, shape (batch_size, ...).
+            t (Tensor): times in [0,1], shape (batch_size).
 
         Returns:
             PathSample: A conditional sample at :math:`X_t \sim p_t`.
         """
         self.assert_sample_shape(x_0=x_0, x_1=x_1, t=t)
-
-        if t.ndim <= 1:
-            t = expand_tensor_like(input_tensor=t, expand_to=x_1[..., 0:1]).clone()
+        t = expand_tensor_like(input_tensor=t, expand_to=x_1[..., 0:1]).clone()
 
         def cond_u(x_0, x_1, t):
             path = geodesic(self.manifold, x_0, x_1)

@@ -33,8 +33,8 @@ class ModelWrapper(ABC, nn.Module):
         | returns the model output for input x at time t, with extra information `extra`.
 
         Args:
-            x (Tensor): input data to the model (Batch, ...).
-            t (Tensor): time (Batch).
+            x (Tensor): input data to the model (batch_size, ...).
+            t (Tensor): time (batch_size).
             **extras: additional information forwarded to the model, e.g., text condition.
 
         Returns:

@@ -66,7 +66,7 @@ class ConvexScheduler(Scheduler):
         """Scheduler for convex paths.
 
         Args:
-            t (Tensor, optional): times in [0,1], shape (...).
+            t (Tensor): times in [0,1], shape (...).
 
         Returns:
             SchedulerOutput: :math:`\alpha_t,\sigma_t,\frac{\partial}{\partial t}\alpha_t,\frac{\partial}{\partial t}\sigma_t`
