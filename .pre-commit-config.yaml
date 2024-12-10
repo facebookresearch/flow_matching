@@ -1,0 +1,17 @@
+repos:
+  - repo: https://github.com/omnilib/ufmt
+    rev: v2.3.0
+    hooks:
+      - id: ufmt
+        additional_dependencies:
+          - black == 22.6.0
+          - usort == 1.0.4
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+    - id: flake8
+  - repo: https://github.com/jsh9/pydoclint
+    rev: 0.5.9
+    hooks:
+      - id: pydoclint
+        args: [--style=google, flow_matching]

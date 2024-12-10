@@ -1,0 +1,8 @@
+dependencies:
+  - pandoc
+  - pip:
+    - sphinx
+    - sphinxcontrib-katex
+    - nbsphinx
+    - sphinxcontrib.bibtex
+    - pydata-sphinx-theme

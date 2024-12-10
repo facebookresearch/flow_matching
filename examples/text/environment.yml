@@ -1,0 +1,19 @@
+name: discrete_flow_matching
+channels:
+  - pytorch
+  - conda-forge
+  - nvidia
+dependencies:
+  - python=3.10
+  - numpy
+  - pip
+  - tqdm
+  - pip:
+    - torch>=2.5.0
+    - hydra-core
+    - hydra-submitit-launcher
+    - datasets
+    - transformers
+    - wandb
+    - einops
+    - flow_matching

@@ -1,0 +1,59 @@
+name: CI
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: mamba-org/setup-micromamba@v1.8.1
+        with:
+          environment-file: environment.yml
+          cache-environment: true
+
+      - name: Check formatting
+        shell: bash -l {0}
+        run: |
+          ufmt check flow_matching/ examples/
+
+      - name: flake8 lint
+        shell: bash -l {0}
+        run: |
+          flake8 flow_matching
+
+      - name: Run tests
+        shell: bash -l {0}
+        run: |
+          coverage run --include='flow_matching/**/*.py' -m unittest discover tests -v
+
+      - name: Docstring Lint
+        shell: bash -l {0}
+        run: |
+          pydoclint --style=google flow_matching
+
+      - name: Build doc pages
+        shell: bash -l {0}
+        working-directory: docs
+        run: |
+          micromamba env update --file deps.yml
+          PYTHONPATH=../:. make html
+
+      - name: coverage
+        shell: bash -l {0}
+        run: |
+          pip install coverage-badge
+          coverage html --include='flow_matching/**/*.py' -d docs/build/html/coverage
+          coverage-badge -o docs/build/html/coverage/coverage-badge.svg
+          rm docs/build/html/coverage/.gitignore
+
+      - name: Deploy docs to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/coverage'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/build/html

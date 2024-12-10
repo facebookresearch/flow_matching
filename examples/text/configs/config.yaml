@@ -1,0 +1,83 @@
+defaults:
+  - _self_
+  - override hydra/launcher: submitit_slurm
+
+compute:
+  ngpus: 8
+  nodes: 1
+
+logging:
+  log_freq: 100
+  log_lr_every: ${logging.log_freq}
+  log_file_name: stdout.log
+  enable_wandb: True
+  entity: flows
+  project: flow_matching
+  group: null
+
+data:
+  train: fineweb-edu
+  valid: wikitext103
+  cache_dir: /path/to/cache/dir
+  num_workers: 8
+
+training:
+  batch_size: 512
+  snapshot: 2000
+  eval_freq: 20000
+  perplexity_freq: 20000
+  seed: 42
+
+eval:
+  batch_size: 512
+  sample_batch_size: 16
+  perplexity: True
+  perplexity_batch_size: 16
+
+optim:
+  weight_decay: 0.03
+  optimizer: AdamW
+  lr: 3e-4
+  beta1: 0.9
+  beta2: 0.95
+  eps: 1e-8
+  warmup: 2500
+  grad_clip: 1.
+  eta_min_ratio: 0.1
+  fused: false
+  n_iters: 1000000
+  log_lr_every: ${logging.log_lr_every}
+
+flow:
+  source_distribution: uniform  # [uniform, mask]
+  loss_function: cross_entropy  # [cross_entropy, generalized_kl]
+  exponent: 1.
+  scheduler_type: polynomial
+  sampling_steps: 1024
+
+model:
+  hidden_size: 768
+  cond_dim: 128
+  length: 1024
+  n_blocks: 12
+  n_heads: 12
+  dropout: 0.1
+  compile: true
+
+hydra_dir: /path/to/hydra/dir
+
+hydra:
+  run:
+    dir: ${hydra_dir}/${now:%Y.%m.%d}/${now:%H%M%S}
+  sweep:
+    dir: ${hydra_dir}/${now:%Y.%m.%d}/${now:%H%M%S}
+    subdir: ${hydra.job.num}
+  launcher:
+    max_num_timeout: 100000
+    timeout_min: 4320
+    partition: learn
+    qos: # TODO: change it to your own qos
+    gpus_per_node: ${compute.ngpus}
+    mem_gb: 1760
+    cpus_per_task: 32
+    nodes: ${compute.nodes}
