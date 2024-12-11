@@ -1,0 +1,26 @@
+name: Notebooks
+on: push
+
+jobs:
+  run-notebooks:
+    runs-on: 4-core-ubuntu-gpu-t4
+    steps:
+      - uses: actions/checkout@v2
+      - uses: mamba-org/setup-micromamba@v1.8.1
+        with:
+          environment-file: environment.yml
+          cache-environment: true
+
+      - name: Check GPU availability
+        shell: bash -l {0}
+        run: |
+          python -c "import torch; print('Is CUDA available:', torch.cuda.is_available())"
+
+      - name: Run notebooks
+        shell: bash -l {0}
+        run: |
+          set -e
+          export PYTHONPATH=${PWD}:$PYTHONPATH
+          for file in examples/*.ipynb; do
+            jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=300 "$file"
+          done

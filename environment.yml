@@ -23,3 +23,4 @@ dependencies:
     - scikit-learn
     - pydoclint
     - coverage
+    - jupyter
