@@ -393,9 +393,9 @@
 <span class="sd">        | return :math:`X_0, X_1, X_t = \alpha_t X_1 + \sigma_t X_0`, and the conditional velocity at :math:`X_t, \dot{X}_t = \dot{\alpha}_t X_1 + \dot{\sigma}_t X_0`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            x_0 (Tensor): source data point, shape (Batch, ...).</span>
-<span class="sd">            x_1 (Tensor): target data point, shape (Batch, ...).</span>
-<span class="sd">            t (Tensor, optional): times in [0,1], shape (Batch).</span>
+<span class="sd">            x_0 (Tensor): source data point, shape (batch_size, ...).</span>
+<span class="sd">            x_1 (Tensor): target data point, shape (batch_size, ...).</span>
+<span class="sd">            t (Tensor): times in [0,1], shape (batch_size).</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            PathSample: a conditional sample at :math:`X_t \sim p_t`.</span>
@@ -404,19 +404,18 @@
 
         <span class="n">scheduler_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">expand_tensor_like</span><span class="p">(</span>
-                <span class="n">input_tensor</span><span class="o">=</span><span class="n">scheduler_output</span><span class="o">.</span><span class="n">alpha_t</span><span class="p">,</span> <span class="n">expand_to</span><span class="o">=</span><span class="n">x_1</span>
-            <span class="p">)</span>
-            <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">expand_tensor_like</span><span class="p">(</span>
-                <span class="n">input_tensor</span><span class="o">=</span><span class="n">scheduler_output</span><span class="o">.</span><span class="n">sigma_t</span><span class="p">,</span> <span class="n">expand_to</span><span class="o">=</span><span class="n">x_1</span>
-            <span class="p">)</span>
-            <span class="n">d_alpha_t</span> <span class="o">=</span> <span class="n">expand_tensor_like</span><span class="p">(</span>
-                <span class="n">input_tensor</span><span class="o">=</span><span class="n">scheduler_output</span><span class="o">.</span><span class="n">d_alpha_t</span><span class="p">,</span> <span class="n">expand_to</span><span class="o">=</span><span class="n">x_1</span>
-            <span class="p">)</span>
-            <span class="n">d_sigma_t</span> <span class="o">=</span> <span class="n">expand_tensor_like</span><span class="p">(</span>
-                <span class="n">input_tensor</span><span class="o">=</span><span class="n">scheduler_output</span><span class="o">.</span><span class="n">d_sigma_t</span><span class="p">,</span> <span class="n">expand_to</span><span class="o">=</span><span class="n">x_1</span>
-            <span class="p">)</span>
+        <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">expand_tensor_like</span><span class="p">(</span>
+            <span class="n">input_tensor</span><span class="o">=</span><span class="n">scheduler_output</span><span class="o">.</span><span class="n">alpha_t</span><span class="p">,</span> <span class="n">expand_to</span><span class="o">=</span><span class="n">x_1</span>
+        <span class="p">)</span>
+        <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">expand_tensor_like</span><span class="p">(</span>
+            <span class="n">input_tensor</span><span class="o">=</span><span class="n">scheduler_output</span><span class="o">.</span><span class="n">sigma_t</span><span class="p">,</span> <span class="n">expand_to</span><span class="o">=</span><span class="n">x_1</span>
+        <span class="p">)</span>
+        <span class="n">d_alpha_t</span> <span class="o">=</span> <span class="n">expand_tensor_like</span><span class="p">(</span>
+            <span class="n">input_tensor</span><span class="o">=</span><span class="n">scheduler_output</span><span class="o">.</span><span class="n">d_alpha_t</span><span class="p">,</span> <span class="n">expand_to</span><span class="o">=</span><span class="n">x_1</span>
+        <span class="p">)</span>
+        <span class="n">d_sigma_t</span> <span class="o">=</span> <span class="n">expand_tensor_like</span><span class="p">(</span>
+            <span class="n">input_tensor</span><span class="o">=</span><span class="n">scheduler_output</span><span class="o">.</span><span class="n">d_sigma_t</span><span class="p">,</span> <span class="n">expand_to</span><span class="o">=</span><span class="n">x_1</span>
+        <span class="p">)</span>
 
         <span class="c1"># construct xt ~ p_t(x|x1).</span>
         <span class="n">x_t</span> <span class="o">=</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="n">x_0</span> <span class="o">+</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="n">x_1</span>

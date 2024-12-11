@@ -427,7 +427,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="flow_matching.path.path_sample.PathSample.x_t">
 <span class="sig-name descname"><span class="pre">x_t</span></span><a class="headerlink" href="#flow_matching.path.path_sample.PathSample.x_t" title="Link to this definition">#</a></dt>
-<dd><p>samples <span class="math">\(X_t \sim p_t(X_t)\)</span>, shape (Batch, …).</p>
+<dd><p>samples <span class="math">\(X_t \sim p_t(X_t)\)</span>, shape (batch_size, …).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Tensor</p>
@@ -438,7 +438,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="flow_matching.path.path_sample.PathSample.dx_t">
 <span class="sig-name descname"><span class="pre">dx_t</span></span><a class="headerlink" href="#flow_matching.path.path_sample.PathSample.dx_t" title="Link to this definition">#</a></dt>
-<dd><p>conditional target <span class="math">\(\frac{\partial X}{\partial t}\)</span>, shape: (Batch, …).</p>
+<dd><p>conditional target <span class="math">\(\frac{\partial X}{\partial t}\)</span>, shape: (batch_size, …).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Tensor</p>
