@@ -39,15 +39,21 @@ def unsqueeze_to_match(source: Tensor, target: Tensor, how: str = "suffix") -> T
 
 
 def expand_tensor_like(input_tensor: Tensor, expand_to: Tensor) -> Tensor:
-    """Expands `input_tensor` to have the same shape as `expand_to` along all remaining dimensions.
-    The input tensor must be broadcastable to the target shape.
+    """Expands `input_tensor` to match the shape of `expand_to`. The input tensor must be
+    broadcastable to the target shape and have the same batch size.
 
     Args:
-        input_tensor (Tensor): Input tensor of shape (batch_size, *dims_1).
-        expand_to (Tensor): Target tensor of shape (batch_size, *dims_2).
+        input_tensor (Tensor): Input tensor with shape (batch_size, *dims_1) where *dims_1
+            must be broadcastable to *dims_2.
+        expand_to (Tensor): Target tensor with shape (batch_size, *dims_2).
 
     Returns:
-        Tensor: Expanded tensor matching shape of expand_to (batch_size, *dims_2).
+        Tensor: Expanded tensor with shape matching expand_to: (batch_size, *dims_2).
+
+    Example:
+        >>> x = torch.randn(32, 10, 1)    # [B, N, 1]
+        >>> y = torch.randn(32, 10, 64)   # [B, N, D]
+        >>> expanded = expand_tensor_like(x, y)  # [B, N, D]
     """
     assert (
         input_tensor.shape[0] == expand_to.shape[0]
