@@ -39,27 +39,26 @@ def unsqueeze_to_match(source: Tensor, target: Tensor, how: str = "suffix") -> T
 
 
 def expand_tensor_like(input_tensor: Tensor, expand_to: Tensor) -> Tensor:
-    """`input_tensor` is a 1d vector of length equal to the batch size of `expand_to`,
-    expand `input_tensor` to have the same shape as `expand_to` along all remaining dimensions.
+    """Expands `input_tensor` to have the same shape as `expand_to` along all remaining dimensions.
+    The input tensor must be broadcastable to the target shape.
 
     Args:
-        input_tensor (Tensor): (batch_size,).
-        expand_to (Tensor): (batch_size, ...).
+        input_tensor (Tensor): Input tensor of shape (batch_size, *dims_1).
+        expand_to (Tensor): Target tensor of shape (batch_size, *dims_2).
 
     Returns:
-        Tensor: (batch_size, ...).
+        Tensor: Expanded tensor matching shape of expand_to (batch_size, *dims_2).
     """
-    assert input_tensor.ndim == 1, "Input tensor must be a 1d vector."
     assert (
         input_tensor.shape[0] == expand_to.shape[0]
     ), f"The first (batch_size) dimension must match. Got shape {input_tensor.shape} and {expand_to.shape}."
 
+    # Add missing dimensions as size 1
     dim_diff = expand_to.ndim - input_tensor.ndim
+    if dim_diff > 0:
+        input_tensor = input_tensor.reshape(*input_tensor.shape, *([1] * dim_diff))
 
-    t_expanded = input_tensor.clone()
-    t_expanded = t_expanded.reshape(-1, *([1] * dim_diff))
-
-    return t_expanded.expand_as(expand_to)
+    return input_tensor.expand_as(expand_to)
 
 
 def gradient(

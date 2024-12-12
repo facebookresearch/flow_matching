@@ -52,10 +52,19 @@ class ProbPath(ABC):
             PathSample: a conditional sample.
         """
 
-    def assert_sample_shape(self, x_0: Tensor, x_1: Tensor, t: Tensor):
-        assert (
-            t.ndim == 1
-        ), f"The time vector t must have shape [batch_size]. Got {t.shape}."
-        assert (
-            t.shape[0] == x_0.shape[0] == x_1.shape[0]
-        ), f"Time t dimension must match the batch size [{x_1.shape[0]}]. Got {t.shape}"
+    def assert_sample_shape(self, x_0: Tensor, x_1: Tensor, t: Tensor) -> None:
+        """Assert that the shapes of input tensors are compatible.
+        
+        Args:
+            x_0 (Tensor): source data point, shape (batch_size, ..., feature_dim)
+            x_1 (Tensor): target data point, shape (batch_size, ..., feature_dim)
+            t (Tensor): times in [0,1], shape (batch_size, ...)
+        """
+        # Check that x_0 and x_1 have the same shape
+        assert x_0.shape == x_1.shape, f"x_0 shape {x_0.shape} must match x_1 shape {x_1.shape}"
+        
+        # Check that t has one dimension less than x_0/x_1
+        assert len(t.shape) == len(x_0.shape) - 1, f"t shape {t.shape} must have one dimension less than x_0/x_1 shape {x_0.shape}"
+        
+        # Check that all but the last dimension match between t and x_0/x_1
+        assert t.shape == x_0.shape[:-1], f"t shape {t.shape} must match all but last dimension of x_0/x_1 shape {x_0.shape}"
