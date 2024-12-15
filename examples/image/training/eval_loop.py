@@ -95,7 +95,7 @@ def eval_model(
         p = torch.zeros(size=[257], dtype=torch.float32, device=device)
         p[256] = 1.0
         solver = MixtureDiscreteEulerSolver(
-            model=cfg_scaled_model, path=path, vocabulary_size=257, p=p
+            model=cfg_scaled_model, path=path, vocabulary_size=257, source_distribution_p=p
         )
     else:
         solver = ODESolver(velocity_model=cfg_scaled_model)
