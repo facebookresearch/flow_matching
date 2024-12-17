@@ -97,6 +97,24 @@ class TestODESolver(unittest.TestCase):
                     self.constant_velocity_model.a.grad, 2.0, delta=1e-4
                 )
 
+    def test_no_gradients(self):
+        x_init = torch.tensor([1.0, 0.0])
+        step_size = 0.001
+        time_grid = torch.tensor([0.0, 1.0])
+
+        method = "euler"
+        self.constant_velocity_model.zero_grad()
+        result = self.constant_velocity_solver.sample(
+            x_init=x_init,
+            step_size=step_size,
+            time_grid=time_grid,
+            method=method,
+        )
+        loss = result.sum()
+
+        with self.assertRaises(RuntimeError):
+            loss.backward()
+
     def test_compute_likelihood(self):
         x_1 = torch.tensor([[0.0, 0.0]])
         step_size = 0.1
@@ -113,6 +131,9 @@ class TestODESolver(unittest.TestCase):
         )
         self.assertIsInstance(log_likelihood, Tensor)
         self.assertEqual(x_1.shape[0], log_likelihood.shape[0])
+
+        with self.assertRaises(RuntimeError):
+            log_likelihood.backward()
 
     def test_compute_likelihood_exact_divergence(self):
         x_1 = torch.tensor([[0.0, 0.0]], requires_grad=True)
