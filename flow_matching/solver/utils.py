@@ -4,6 +4,8 @@
 # This source code is licensed under the CC-by-NC license found in the
 # LICENSE file in the root directory of this source tree.
 
+from functools import wraps
+
 import torch
 from torch import Tensor
 
@@ -17,3 +19,12 @@ def get_nearest_times(time_grid: Tensor, t_discretization: Tensor) -> Tensor:
     nearest_indices = distances.argmin(dim=1)
 
     return t_discretization[nearest_indices]
+
+
+def toggle_grad(func):
+    @wraps(func)
+    def wrapper(*args, enable_grad=False, **kwargs):
+        with torch.set_grad_enabled(enable_grad):
+            return func(*args, **kwargs)
+
+    return wrapper

@@ -17,6 +17,7 @@ from tqdm import tqdm
 from flow_matching.path import MixtureDiscreteProbPath
 
 from flow_matching.solver.solver import Solver
+from flow_matching.solver.utils import toggle_grad
 from flow_matching.utils import categorical, ModelWrapper
 from .utils import get_nearest_times
 
@@ -82,7 +83,7 @@ class MixtureDiscreteEulerSolver(Solver):
 
         self.source_distribution_p = source_distribution_p
 
-    @torch.no_grad()
+    @toggle_grad
     def sample(
         self,
         x_init: Tensor,

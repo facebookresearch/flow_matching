@@ -11,6 +11,7 @@ from torch import Tensor
 from torchdiffeq import odeint
 
 from flow_matching.solver.solver import Solver
+from flow_matching.solver.utils import toggle_grad
 from flow_matching.utils import gradient, ModelWrapper
 
 
@@ -27,7 +28,7 @@ class ODESolver(Solver):
         super().__init__()
         self.velocity_model = velocity_model
 
-    @torch.no_grad()
+    @toggle_grad
     def sample(
         self,
         x_init: Tensor,
@@ -101,7 +102,7 @@ class ODESolver(Solver):
         else:
             return sol[-1]
 
-    @torch.no_grad()
+    @toggle_grad
     def compute_likelihood(
         self,
         x_1: Tensor,
@@ -174,16 +175,15 @@ class ODESolver(Solver):
         y_init = (x_1, torch.zeros(x_1.shape[0], device=x_1.device))
         ode_opts = {"step_size": step_size} if step_size is not None else {}
 
-        with torch.no_grad():
-            sol, log_det = odeint(
-                dynamics_func,
-                y_init,
-                time_grid,
-                method=method,
-                options=ode_opts,
-                atol=atol,
-                rtol=rtol,
-            )
+        sol, log_det = odeint(
+            dynamics_func,
+            y_init,
+            time_grid,
+            method=method,
+            options=ode_opts,
+            atol=atol,
+            rtol=rtol,
+        )
 
         x_source = sol[-1]
         source_log_p = log_p0(x_source)

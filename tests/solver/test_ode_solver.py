@@ -23,9 +23,10 @@ class DummyModel(ModelWrapper):
 class ConstantVelocityModel(ModelWrapper):
     def __init__(self):
         super().__init__(None)
+        self.a = torch.nn.Parameter(torch.tensor(1.0))
 
     def forward(self, x: torch.Tensor, t: torch.Tensor, **extras) -> torch.Tensor:
-        return x * 0.0 + 1.0
+        return x * 0.0 + self.a
 
 
 class TestODESolver(unittest.TestCase):
@@ -75,6 +76,27 @@ class TestODESolver(unittest.TestCase):
                     "The solution to the velocity field 3t^3 from 0 to 1 is incorrect.",
                 )
 
+    def test_gradients(self):
+        x_init = torch.tensor([1.0, 0.0])
+        step_size = 0.001
+        time_grid = torch.tensor([0.0, 1.0])
+
+        for method in ["euler", "dopri5", "midpoint", "heun3"]:
+            with self.subTest(method=method):
+                self.constant_velocity_model.zero_grad()
+                result = self.constant_velocity_solver.sample(
+                    x_init=x_init,
+                    step_size=step_size if method != "dopri5" else None,
+                    time_grid=time_grid,
+                    method=method,
+                    enable_grad=True,
+                )
+                loss = result.sum()
+                loss.backward()
+                self.assertAlmostEqual(
+                    self.constant_velocity_model.a.grad, 2.0, delta=1e-4
+                )
+
     def test_compute_likelihood(self):
         x_1 = torch.tensor([[0.0, 0.0]])
         step_size = 0.1
@@ -93,7 +115,7 @@ class TestODESolver(unittest.TestCase):
         self.assertEqual(x_1.shape[0], log_likelihood.shape[0])
 
     def test_compute_likelihood_exact_divergence(self):
-        x_1 = torch.tensor([[0.0, 0.0]])
+        x_1 = torch.tensor([[0.0, 0.0]], requires_grad=True)
         step_size = 0.1
 
         # Define a dummy log probability function
@@ -105,6 +127,7 @@ class TestODESolver(unittest.TestCase):
             log_p0=dummy_log_p,
             step_size=step_size,
             exact_divergence=True,
+            enable_grad=True,
         )
         self.assertIsInstance(log_likelihood, Tensor)
         self.assertEqual(x_1.shape[0], log_likelihood.shape[0])
@@ -113,6 +136,10 @@ class TestODESolver(unittest.TestCase):
         )
         self.assertTrue(
             torch.allclose(x_1 - 1.0, x_0, atol=1e-2),
+        )
+        log_likelihood.backward()
+        self.assertTrue(
+            torch.allclose(x_1.grad, torch.tensor([1.0, 1.0]), atol=1e-2),
         )
 
 

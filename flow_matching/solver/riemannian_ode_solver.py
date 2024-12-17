@@ -12,6 +12,7 @@ from torch import Tensor
 from tqdm import tqdm
 
 from flow_matching.solver.solver import Solver
+from flow_matching.solver.utils import toggle_grad
 from flow_matching.utils import ModelWrapper
 from flow_matching.utils.manifolds import geodesic, Manifold
 
@@ -31,7 +32,7 @@ class RiemannianODESolver(Solver):
         self.manifold = manifold
         self.velocity_model = velocity_model
 
-    @torch.no_grad()
+    @toggle_grad
     def sample(
         self,
         x_init: Tensor,
