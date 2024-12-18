@@ -15,8 +15,8 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
+  <!--
+    this give us a css class that will be invisible only if js is disabled
   -->
   <noscript>
     <style>
@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=a47e71e3" />
@@ -35,10 +35,10 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/katex-math.css?v=91adb8b6" />
   
   <!-- So that users can add custom icons -->
-  <script src="../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
@@ -277,9 +277,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -359,7 +364,6 @@
 
 <div class="viewcode-block" id="ODESolver.sample">
 <a class="viewcode-back" href="../../../generated/flow_matching.solver.ODESolver.html#flow_matching.solver.ODESolver.sample">[docs]</a>
-    <span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x_init</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
@@ -369,6 +373,7 @@
         <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
         <span class="n">time_grid</span><span class="p">:</span> <span class="n">Tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span>
         <span class="n">return_intermediates</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">enable_grad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">model_extras</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Solve the ODE with the velocity field.</span>
@@ -404,6 +409,7 @@
 <span class="sd">            rtol (float): Relative tolerance, used for adaptive step solvers.</span>
 <span class="sd">            time_grid (Tensor): The process is solved in the interval [min(time_grid, max(time_grid)] and if step_size is None then time discretization is set by the time grid. May specify a descending time_grid to solve in the reverse direction. Defaults to torch.tensor([0.0, 1.0]).</span>
 <span class="sd">            return_intermediates (bool, optional): If True then return intermediate time steps according to time_grid. Defaults to False.</span>
+<span class="sd">            enable_grad (bool, optional): Whether to compute gradients during sampling. Defaults to False.</span>
 <span class="sd">            **model_extras: Additional input for the model.</span>
 
 <span class="sd">        Returns:</span>
@@ -417,16 +423,17 @@
 
         <span class="n">ode_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;step_size&quot;</span><span class="p">:</span> <span class="n">step_size</span><span class="p">}</span> <span class="k">if</span> <span class="n">step_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
 
-        <span class="c1"># Approximate ODE solution with numerical ODE solver</span>
-        <span class="n">sol</span> <span class="o">=</span> <span class="n">odeint</span><span class="p">(</span>
-            <span class="n">ode_func</span><span class="p">,</span>
-            <span class="n">x_init</span><span class="p">,</span>
-            <span class="n">time_grid</span><span class="p">,</span>
-            <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
-            <span class="n">options</span><span class="o">=</span><span class="n">ode_opts</span><span class="p">,</span>
-            <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span>
-            <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">set_grad_enabled</span><span class="p">(</span><span class="n">enable_grad</span><span class="p">):</span>
+            <span class="c1"># Approximate ODE solution with numerical ODE solver</span>
+            <span class="n">sol</span> <span class="o">=</span> <span class="n">odeint</span><span class="p">(</span>
+                <span class="n">ode_func</span><span class="p">,</span>
+                <span class="n">x_init</span><span class="p">,</span>
+                <span class="n">time_grid</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+                <span class="n">options</span><span class="o">=</span><span class="n">ode_opts</span><span class="p">,</span>
+                <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span>
+                <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">return_intermediates</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sol</span>
@@ -436,7 +443,6 @@
 
 <div class="viewcode-block" id="ODESolver.compute_likelihood">
 <a class="viewcode-back" href="../../../generated/flow_matching.solver.ODESolver.html#flow_matching.solver.ODESolver.compute_likelihood">[docs]</a>
-    <span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">compute_likelihood</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x_1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
@@ -448,6 +454,7 @@
         <span class="n">time_grid</span><span class="p">:</span> <span class="n">Tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span>
         <span class="n">return_intermediates</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">exact_divergence</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">enable_grad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">model_extras</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">Tensor</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Solve for log likelihood given a target sample at :math:`t=0`.</span>
@@ -465,6 +472,7 @@
 <span class="sd">            time_grid (Tensor): If step_size is None then time discretization is set by the time grid. Must start at 1.0 and end at 0.0, otherwise the likelihood computation is not valid. Defaults to torch.tensor([1.0, 0.0]).</span>
 <span class="sd">            return_intermediates (bool, optional): If True then return intermediate time steps according to time_grid. Otherwise only return the final sample. Defaults to False.</span>
 <span class="sd">            exact_divergence (bool): Whether to compute the exact divergence or use the Hutchinson estimator.</span>
+<span class="sd">            enable_grad (bool, optional): Whether to compute gradients during sampling. Defaults to False.</span>
 <span class="sd">            **model_extras: Additional input for the model.</span>
 
 <span class="sd">        Returns:</span>
@@ -509,7 +517,7 @@
         <span class="n">y_init</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">x_1</span><span class="o">.</span><span class="n">device</span><span class="p">))</span>
         <span class="n">ode_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;step_size&quot;</span><span class="p">:</span> <span class="n">step_size</span><span class="p">}</span> <span class="k">if</span> <span class="n">step_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
 
-        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">set_grad_enabled</span><span class="p">(</span><span class="n">enable_grad</span><span class="p">):</span>
             <span class="n">sol</span><span class="p">,</span> <span class="n">log_det</span> <span class="o">=</span> <span class="n">odeint</span><span class="p">(</span>
                 <span class="n">dynamics_func</span><span class="p">,</span>
                 <span class="n">y_init</span><span class="p">,</span>
@@ -558,8 +566,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -592,7 +600,8 @@
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>
