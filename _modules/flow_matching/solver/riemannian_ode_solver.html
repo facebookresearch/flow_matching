@@ -342,11 +342,17 @@
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">flow_matching.solver.solver</span> <span class="kn">import</span> <span class="n">Solver</span>
 <span class="kn">from</span> <span class="nn">flow_matching.utils</span> <span class="kn">import</span> <span class="n">ModelWrapper</span>
 <span class="kn">from</span> <span class="nn">flow_matching.utils.manifolds</span> <span class="kn">import</span> <span class="n">geodesic</span><span class="p">,</span> <span class="n">Manifold</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+    <span class="n">TQDM_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">TQDM_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 
 <div class="viewcode-block" id="RiemannianODESolver">
@@ -397,6 +403,9 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Tensor: The sampled sequence. Defaults to returning samples at :math:`t=1`.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ImportError: To run in verbose mode, tqdm must be installed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">step_fns</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;euler&quot;</span><span class="p">:</span> <span class="n">_euler_step</span><span class="p">,</span>
@@ -433,6 +442,10 @@
         <span class="n">t0s</span> <span class="o">=</span> <span class="n">t_discretization</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">TQDM_AVAILABLE</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                    <span class="s2">&quot;tqdm is required for verbose mode. Please install it.&quot;</span>
+                <span class="p">)</span>
             <span class="n">t0s</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">t0s</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">return_intermediates</span><span class="p">:</span>
