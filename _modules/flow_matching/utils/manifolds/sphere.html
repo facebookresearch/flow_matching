@@ -29,7 +29,7 @@
   <link href="../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=a47e71e3" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/katex-math.css?v=91adb8b6" />
@@ -337,22 +337,22 @@
 <span class="c1"># This source code is licensed under the CC-by-NC license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensor</span>
 
-<span class="kn">from</span> <span class="nn">flow_matching.utils.manifolds</span> <span class="kn">import</span> <span class="n">Manifold</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.utils.manifolds</span><span class="w"> </span><span class="kn">import</span> <span class="n">Manifold</span>
 
 
 <div class="viewcode-block" id="Sphere">
 <a class="viewcode-back" href="../../../../generated/flow_matching.utils.manifolds.Sphere.html#flow_matching.utils.manifolds.Sphere">[docs]</a>
-<span class="k">class</span> <span class="nc">Sphere</span><span class="p">(</span><span class="n">Manifold</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Sphere</span><span class="p">(</span><span class="n">Manifold</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a hyperpshere in :math:`R^D`. Isometric to the product of 1-D spheres.&quot;&quot;&quot;</span>
 
     <span class="n">EPS</span> <span class="o">=</span> <span class="p">{</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span> <span class="mf">1e-7</span><span class="p">}</span>
 
 <div class="viewcode-block" id="Sphere.expmap">
 <a class="viewcode-back" href="../../../../generated/flow_matching.utils.manifolds.Sphere.html#flow_matching.utils.manifolds.Sphere.expmap">[docs]</a>
-    <span class="k">def</span> <span class="nf">expmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
         <span class="n">norm_u</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">exp</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">norm_u</span><span class="p">)</span> <span class="o">+</span> <span class="n">u</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">norm_u</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm_u</span>
         <span class="n">retr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projx</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">u</span><span class="p">)</span>
@@ -363,7 +363,7 @@
 
 <div class="viewcode-block" id="Sphere.logmap">
 <a class="viewcode-back" href="../../../../generated/flow_matching.utils.manifolds.Sphere.html#flow_matching.utils.manifolds.Sphere.logmap">[docs]</a>
-    <span class="k">def</span> <span class="nf">logmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
         <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proju</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span>
         <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">cond</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">EPS</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">])</span>
@@ -377,17 +377,17 @@
 
 <div class="viewcode-block" id="Sphere.projx">
 <a class="viewcode-back" href="../../../../generated/flow_matching.utils.manifolds.Sphere.html#flow_matching.utils.manifolds.Sphere.projx">[docs]</a>
-    <span class="k">def</span> <span class="nf">projx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">projx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">x</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Sphere.proju">
 <a class="viewcode-back" href="../../../../generated/flow_matching.utils.manifolds.Sphere.html#flow_matching.utils.manifolds.Sphere.proju">[docs]</a>
-    <span class="k">def</span> <span class="nf">proju</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">proju</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">u</span> <span class="o">-</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span></div>
 
 
-    <span class="k">def</span> <span class="nf">dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
         <span class="n">inner</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="n">keepdim</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">inner</span><span class="p">)</span></div>
 

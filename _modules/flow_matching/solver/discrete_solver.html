@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=a47e71e3" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/katex-math.css?v=91adb8b6" />
@@ -337,23 +337,23 @@
 <span class="c1"># This source code is licensed under the CC-by-NC license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
-<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">nullcontext</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">nullcontext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">ceil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensor</span>
 
-<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">functional</span> <span class="k">as</span> <span class="n">F</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">functional</span> <span class="k">as</span> <span class="n">F</span>
 
-<span class="kn">from</span> <span class="nn">flow_matching.path</span> <span class="kn">import</span> <span class="n">MixtureDiscreteProbPath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">MixtureDiscreteProbPath</span>
 
-<span class="kn">from</span> <span class="nn">flow_matching.solver.solver</span> <span class="kn">import</span> <span class="n">Solver</span>
-<span class="kn">from</span> <span class="nn">flow_matching.utils</span> <span class="kn">import</span> <span class="n">categorical</span><span class="p">,</span> <span class="n">ModelWrapper</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">get_nearest_times</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.solver.solver</span><span class="w"> </span><span class="kn">import</span> <span class="n">Solver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">categorical</span><span class="p">,</span> <span class="n">ModelWrapper</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_nearest_times</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
 
     <span class="n">TQDM_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -362,7 +362,7 @@
 
 <div class="viewcode-block" id="MixtureDiscreteEulerSolver">
 <a class="viewcode-back" href="../../../generated/flow_matching.solver.MixtureDiscreteEulerSolver.html#flow_matching.solver.MixtureDiscreteEulerSolver">[docs]</a>
-<span class="k">class</span> <span class="nc">MixtureDiscreteEulerSolver</span><span class="p">(</span><span class="n">Solver</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MixtureDiscreteEulerSolver</span><span class="p">(</span><span class="n">Solver</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Solver that simulates the CTMC process :math:`(X_t)_{t_{\text{init}}\leq t\leq t_{\text{final}}}` defined by :math:`p_t` the marginal probability path of ``path``.</span>
 <span class="sd">    Given :math:`X_t \sim p_t`, the algorithm of solver step from :math:`t` to :math:`t+h` for the i-th coordinate is:</span>
 
@@ -404,7 +404,7 @@
 <span class="sd">        source_distribution_p (Optional[Tensor], optional): Source distribution, must be of shape [vocabulary_size]. Required only when divergence-free term for the probability velocity is non-zero. Defaults to None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">model</span><span class="p">:</span> <span class="n">ModelWrapper</span><span class="p">,</span>
         <span class="n">path</span><span class="p">:</span> <span class="n">MixtureDiscreteProbPath</span><span class="p">,</span>
@@ -426,7 +426,7 @@
 <div class="viewcode-block" id="MixtureDiscreteEulerSolver.sample">
 <a class="viewcode-back" href="../../../generated/flow_matching.solver.MixtureDiscreteEulerSolver.html#flow_matching.solver.MixtureDiscreteEulerSolver.sample">[docs]</a>
     <span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x_init</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
         <span class="n">step_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>

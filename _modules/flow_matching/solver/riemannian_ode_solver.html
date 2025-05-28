@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=a47e71e3" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/katex-math.css?v=91adb8b6" />
@@ -337,18 +337,18 @@
 <span class="c1"># This source code is licensed under the CC-by-NC license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensor</span>
 
-<span class="kn">from</span> <span class="nn">flow_matching.solver.solver</span> <span class="kn">import</span> <span class="n">Solver</span>
-<span class="kn">from</span> <span class="nn">flow_matching.utils</span> <span class="kn">import</span> <span class="n">ModelWrapper</span>
-<span class="kn">from</span> <span class="nn">flow_matching.utils.manifolds</span> <span class="kn">import</span> <span class="n">geodesic</span><span class="p">,</span> <span class="n">Manifold</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.solver.solver</span><span class="w"> </span><span class="kn">import</span> <span class="n">Solver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelWrapper</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.utils.manifolds</span><span class="w"> </span><span class="kn">import</span> <span class="n">geodesic</span><span class="p">,</span> <span class="n">Manifold</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
 
     <span class="n">TQDM_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -357,7 +357,7 @@
 
 <div class="viewcode-block" id="RiemannianODESolver">
 <a class="viewcode-back" href="../../../generated/flow_matching.solver.RiemannianODESolver.html#flow_matching.solver.RiemannianODESolver">[docs]</a>
-<span class="k">class</span> <span class="nc">RiemannianODESolver</span><span class="p">(</span><span class="n">Solver</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RiemannianODESolver</span><span class="p">(</span><span class="n">Solver</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Riemannian ODE solver</span>
 <span class="sd">    Initialize the ``RiemannianODESolver``.</span>
 
@@ -367,14 +367,14 @@
 <span class="sd">            and returning :math:`u_t(x)` which is assumed to lie on the tangent plane at `x`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manifold</span><span class="p">:</span> <span class="n">Manifold</span><span class="p">,</span> <span class="n">velocity_model</span><span class="p">:</span> <span class="n">ModelWrapper</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manifold</span><span class="p">:</span> <span class="n">Manifold</span><span class="p">,</span> <span class="n">velocity_model</span><span class="p">:</span> <span class="n">ModelWrapper</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">manifold</span> <span class="o">=</span> <span class="n">manifold</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">velocity_model</span> <span class="o">=</span> <span class="n">velocity_model</span>
 
 <div class="viewcode-block" id="RiemannianODESolver.sample">
 <a class="viewcode-back" href="../../../generated/flow_matching.solver.RiemannianODESolver.html#flow_matching.solver.RiemannianODESolver.sample">[docs]</a>
-    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x_init</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
         <span class="n">step_size</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -415,7 +415,7 @@
         <span class="k">assert</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">step_fns</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;Unknown method </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">step_fn</span> <span class="o">=</span> <span class="n">step_fns</span><span class="p">[</span><span class="n">method</span><span class="p">]</span>
 
-        <span class="k">def</span> <span class="nf">velocity_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">velocity_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_model</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="o">**</span><span class="n">model_extras</span><span class="p">)</span>
 
         <span class="c1"># --- Factor this out.</span>
@@ -485,13 +485,13 @@
 
 
 
-<span class="k">def</span> <span class="nf">interp</span><span class="p">(</span><span class="n">manifold</span><span class="p">,</span> <span class="n">xt</span><span class="p">,</span> <span class="n">xt_next</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">t_next</span><span class="p">,</span> <span class="n">t_ret</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">interp</span><span class="p">(</span><span class="n">manifold</span><span class="p">,</span> <span class="n">xt</span><span class="p">,</span> <span class="n">xt_next</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">t_next</span><span class="p">,</span> <span class="n">t_ret</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">geodesic</span><span class="p">(</span><span class="n">manifold</span><span class="p">,</span> <span class="n">xt</span><span class="p">,</span> <span class="n">xt_next</span><span class="p">)(</span>
         <span class="p">(</span><span class="n">t_ret</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">t_next</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="p">)</span><span class="o">.</span><span class="n">reshape_as</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_euler_step</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_euler_step</span><span class="p">(</span>
     <span class="n">velocity_model</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
     <span class="n">xt</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
     <span class="n">t0</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
@@ -526,7 +526,7 @@
     <span class="k">return</span> <span class="n">projx_fn</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_midpoint_step</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_midpoint_step</span><span class="p">(</span>
     <span class="n">velocity_model</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
     <span class="n">xt</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
     <span class="n">t0</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
@@ -564,7 +564,7 @@
     <span class="k">return</span> <span class="n">projx_fn</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_rk4_step</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_rk4_step</span><span class="p">(</span>
     <span class="n">velocity_model</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
     <span class="n">xt</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
     <span class="n">t0</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>

@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=a47e71e3" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/katex-math.css?v=91adb8b6" />
@@ -337,23 +337,23 @@
 <span class="c1"># This source code is licensed under the CC-by-NC license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
-<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 
-<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
-<span class="kn">from</span> <span class="nn">torch.func</span> <span class="kn">import</span> <span class="n">jvp</span><span class="p">,</span> <span class="n">vmap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">jvp</span><span class="p">,</span> <span class="n">vmap</span>
 
-<span class="kn">from</span> <span class="nn">flow_matching.path.path</span> <span class="kn">import</span> <span class="n">ProbPath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.path.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProbPath</span>
 
-<span class="kn">from</span> <span class="nn">flow_matching.path.path_sample</span> <span class="kn">import</span> <span class="n">PathSample</span>
-<span class="kn">from</span> <span class="nn">flow_matching.path.scheduler</span> <span class="kn">import</span> <span class="n">ConvexScheduler</span>
-<span class="kn">from</span> <span class="nn">flow_matching.utils</span> <span class="kn">import</span> <span class="n">expand_tensor_like</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.path.path_sample</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathSample</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.path.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConvexScheduler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">expand_tensor_like</span>
 
-<span class="kn">from</span> <span class="nn">flow_matching.utils.manifolds</span> <span class="kn">import</span> <span class="n">geodesic</span><span class="p">,</span> <span class="n">Manifold</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.utils.manifolds</span><span class="w"> </span><span class="kn">import</span> <span class="n">geodesic</span><span class="p">,</span> <span class="n">Manifold</span>
 
 
 <div class="viewcode-block" id="GeodesicProbPath">
 <a class="viewcode-back" href="../../../generated/flow_matching.path.GeodesicProbPath.html#flow_matching.path.GeodesicProbPath">[docs]</a>
-<span class="k">class</span> <span class="nc">GeodesicProbPath</span><span class="p">(</span><span class="n">ProbPath</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GeodesicProbPath</span><span class="p">(</span><span class="n">ProbPath</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The ``GeodesicProbPath`` class represents a specific type of probability path where the transformation between distributions is defined through the geodesic path.</span>
 <span class="sd">    Mathematically, a geodesic path can be represented as:</span>
 
@@ -398,13 +398,13 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">:</span> <span class="n">ConvexScheduler</span><span class="p">,</span> <span class="n">manifold</span><span class="p">:</span> <span class="n">Manifold</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">:</span> <span class="n">ConvexScheduler</span><span class="p">,</span> <span class="n">manifold</span><span class="p">:</span> <span class="n">Manifold</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">scheduler</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">manifold</span> <span class="o">=</span> <span class="n">manifold</span>
 
 <div class="viewcode-block" id="GeodesicProbPath.sample">
 <a class="viewcode-back" href="../../../generated/flow_matching.path.GeodesicProbPath.html#flow_matching.path.GeodesicProbPath.sample">[docs]</a>
-    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PathSample</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PathSample</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sample from the Riemannian probability path with geodesic interpolation:</span>
 
 <span class="sd">        | given :math:`(X_0,X_1) \sim \pi(X_0,X_1)` and a scheduler :math:`\kappa_t`.</span>
@@ -421,7 +421,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assert_sample_shape</span><span class="p">(</span><span class="n">x_0</span><span class="o">=</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="o">=</span><span class="n">x_1</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">expand_tensor_like</span><span class="p">(</span><span class="n">input_tensor</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">expand_to</span><span class="o">=</span><span class="n">x_1</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">cond_u</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">cond_u</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">geodesic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">manifold</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">)</span>
             <span class="n">x_t</span><span class="p">,</span> <span class="n">dx_t</span> <span class="o">=</span> <span class="n">jvp</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">alpha_t</span><span class="p">),</span>

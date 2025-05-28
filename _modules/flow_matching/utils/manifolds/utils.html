@@ -29,7 +29,7 @@
   <link href="../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=a47e71e3" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/katex-math.css?v=91adb8b6" />
@@ -337,17 +337,17 @@
 <span class="c1"># This source code is licensed under the CC-by-NC license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensor</span>
 
-<span class="kn">from</span> <span class="nn">flow_matching.utils.manifolds</span> <span class="kn">import</span> <span class="n">Manifold</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.utils.manifolds</span><span class="w"> </span><span class="kn">import</span> <span class="n">Manifold</span>
 
 
 <div class="viewcode-block" id="geodesic">
 <a class="viewcode-back" href="../../../../generated/flow_matching.utils.manifolds.geodesic.html#flow_matching.utils.manifolds.geodesic">[docs]</a>
-<span class="k">def</span> <span class="nf">geodesic</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">geodesic</span><span class="p">(</span>
     <span class="n">manifold</span><span class="p">:</span> <span class="n">Manifold</span><span class="p">,</span> <span class="n">start_point</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">end_point</span><span class="p">:</span> <span class="n">Tensor</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">Tensor</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate parameterized function for geodesic curve.</span>
@@ -363,7 +363,7 @@
 
     <span class="n">shooting_tangent_vec</span> <span class="o">=</span> <span class="n">manifold</span><span class="o">.</span><span class="n">logmap</span><span class="p">(</span><span class="n">start_point</span><span class="p">,</span> <span class="n">end_point</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate parameterized function for geodesic curve.</span>
 
 <span class="sd">        Args:</span>

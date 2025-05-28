@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=a47e71e3" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/katex-math.css?v=91adb8b6" />
@@ -337,16 +337,16 @@
 <span class="c1"># This source code is licensed under the CC-by-NC license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
-<span class="kn">from</span> <span class="nn">torch.nn.modules.loss</span> <span class="kn">import</span> <span class="n">_Loss</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.nn.modules.loss</span><span class="w"> </span><span class="kn">import</span> <span class="n">_Loss</span>
 
-<span class="kn">from</span> <span class="nn">flow_matching.path</span> <span class="kn">import</span> <span class="n">MixtureDiscreteProbPath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">MixtureDiscreteProbPath</span>
 
 
 <div class="viewcode-block" id="MixturePathGeneralizedKL">
 <a class="viewcode-back" href="../../../generated/flow_matching.loss.MixturePathGeneralizedKL.html#flow_matching.loss.MixturePathGeneralizedKL">[docs]</a>
-<span class="k">class</span> <span class="nc">MixturePathGeneralizedKL</span><span class="p">(</span><span class="n">_Loss</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MixturePathGeneralizedKL</span><span class="p">(</span><span class="n">_Loss</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;A generalized KL loss for discrete flow matching.</span>
 <span class="sd">    A class that measures the generalized KL of a discrete flow model :math:`p_{1|t}` w.r.t. a probability path given by ``path``. Note: this class is assuming that the model is trained on the same path.</span>
 
@@ -362,13 +362,13 @@
 <span class="sd">        reduction (str, optional): Specify the reduction to apply to the output ``&#39;none&#39;`` | ``&#39;mean&#39;`` | ``&#39;sum&#39;``. ``&#39;none&#39;``: no reduction is applied to the output, ``&#39;mean&#39;``: the output is reduced by mean over sequence elements, ``&#39;sum&#39;``: the output is reduced by sum over sequence elements. Defaults to &#39;mean&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">MixtureDiscreteProbPath</span><span class="p">,</span> <span class="n">reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mean&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">MixtureDiscreteProbPath</span><span class="p">,</span> <span class="n">reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mean&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">reduction</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
 
 <div class="viewcode-block" id="MixturePathGeneralizedKL.forward">
 <a class="viewcode-back" href="../../../generated/flow_matching.loss.MixturePathGeneralizedKL.html#flow_matching.loss.MixturePathGeneralizedKL.forward">[docs]</a>
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logits</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logits</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Evaluates the generalized KL loss.</span>
 
 <span class="sd">        Args:</span>

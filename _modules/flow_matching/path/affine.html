@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=a47e71e3" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/katex-math.css?v=91adb8b6" />
@@ -337,17 +337,17 @@
 <span class="c1"># This source code is licensed under the CC-by-NC license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
-<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensor</span>
 
-<span class="kn">from</span> <span class="nn">flow_matching.path.path</span> <span class="kn">import</span> <span class="n">ProbPath</span>
-<span class="kn">from</span> <span class="nn">flow_matching.path.path_sample</span> <span class="kn">import</span> <span class="n">PathSample</span>
-<span class="kn">from</span> <span class="nn">flow_matching.path.scheduler.scheduler</span> <span class="kn">import</span> <span class="n">CondOTScheduler</span><span class="p">,</span> <span class="n">Scheduler</span>
-<span class="kn">from</span> <span class="nn">flow_matching.utils</span> <span class="kn">import</span> <span class="n">expand_tensor_like</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.path.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProbPath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.path.path_sample</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathSample</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.path.scheduler.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">CondOTScheduler</span><span class="p">,</span> <span class="n">Scheduler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flow_matching.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">expand_tensor_like</span>
 
 
 <div class="viewcode-block" id="AffineProbPath">
 <a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath">[docs]</a>
-<span class="k">class</span> <span class="nc">AffineProbPath</span><span class="p">(</span><span class="n">ProbPath</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AffineProbPath</span><span class="p">(</span><span class="n">ProbPath</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The ``AffineProbPath`` class represents a specific type of probability path where the transformation between distributions is affine.</span>
 <span class="sd">    An affine transformation can be represented as:</span>
 
@@ -386,12 +386,12 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">:</span> <span class="n">Scheduler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">:</span> <span class="n">Scheduler</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">scheduler</span>
 
 <div class="viewcode-block" id="AffineProbPath.sample">
 <a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath.sample">[docs]</a>
-    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PathSample</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PathSample</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sample from the affine probability path:</span>
 
 <span class="sd">        | given :math:`(X_0,X_1) \sim \pi(X_0,X_1)` and a scheduler :math:`(\alpha_t,\sigma_t)`.</span>
@@ -431,7 +431,7 @@
 
 <div class="viewcode-block" id="AffineProbPath.target_to_velocity">
 <a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath.target_to_velocity">[docs]</a>
-    <span class="k">def</span> <span class="nf">target_to_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">target_to_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert from x_1 representation to velocity.</span>
 
 <span class="sd">        | given :math:`X_1`.</span>
@@ -460,7 +460,7 @@
 
 <div class="viewcode-block" id="AffineProbPath.epsilon_to_velocity">
 <a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath.epsilon_to_velocity">[docs]</a>
-    <span class="k">def</span> <span class="nf">epsilon_to_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">epsilon_to_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert from epsilon representation to velocity.</span>
 
 <span class="sd">        | given :math:`\epsilon`.</span>
@@ -489,7 +489,7 @@
 
 <div class="viewcode-block" id="AffineProbPath.velocity_to_target">
 <a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath.velocity_to_target">[docs]</a>
-    <span class="k">def</span> <span class="nf">velocity_to_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velocity</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">velocity_to_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velocity</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert from velocity to x_1 representation.</span>
 
 <span class="sd">        | given :math:`\dot{X}_t`.</span>
@@ -518,7 +518,7 @@
 
 <div class="viewcode-block" id="AffineProbPath.epsilon_to_target">
 <a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath.epsilon_to_target">[docs]</a>
-    <span class="k">def</span> <span class="nf">epsilon_to_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">epsilon_to_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert from epsilon representation to x_1 representation.</span>
 
 <span class="sd">        | given :math:`\epsilon`.</span>
@@ -545,7 +545,7 @@
 
 <div class="viewcode-block" id="AffineProbPath.velocity_to_epsilon">
 <a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath.velocity_to_epsilon">[docs]</a>
-    <span class="k">def</span> <span class="nf">velocity_to_epsilon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velocity</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">velocity_to_epsilon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velocity</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert from velocity to noise representation.</span>
 
 <span class="sd">        | given :math:`\dot{X}_t`.</span>
@@ -574,7 +574,7 @@
 
 <div class="viewcode-block" id="AffineProbPath.target_to_epsilon">
 <a class="viewcode-back" href="../../../generated/flow_matching.path.AffineProbPath.html#flow_matching.path.AffineProbPath.target_to_epsilon">[docs]</a>
-    <span class="k">def</span> <span class="nf">target_to_epsilon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">target_to_epsilon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert from x_1 representation to velocity.</span>
 
 <span class="sd">        | given :math:`X_1`.</span>
@@ -603,7 +603,7 @@
 
 <div class="viewcode-block" id="CondOTProbPath">
 <a class="viewcode-back" href="../../../generated/flow_matching.path.CondOTProbPath.html#flow_matching.path.CondOTProbPath">[docs]</a>
-<span class="k">class</span> <span class="nc">CondOTProbPath</span><span class="p">(</span><span class="n">AffineProbPath</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CondOTProbPath</span><span class="p">(</span><span class="n">AffineProbPath</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The ``CondOTProbPath`` class represents a conditional optimal transport probability path.</span>
 
 <span class="sd">    This class is a specialized version of the ``AffineProbPath`` that uses a conditional optimal transport scheduler to determine the parameters of the affine transformation.</span>
@@ -615,7 +615,7 @@
 <span class="sd">        \alpha_t = t \quad \text{and} \quad \sigma_t = 1 - t.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">CondOTScheduler</span><span class="p">()</span></div>
 
 </pre></div>
