@@ -159,7 +159,7 @@ class ODESolver(Solver):
                     # Compute exact divergence
                     div = 0
                     for i in range(ut.flatten(1).shape[1]):
-                        div += gradient(ut[:, i], xt, create_graph=True)[:, i]
+                        div += gradient(ut[:, i], xt)[:, i].detach()
                 else:
                     # Compute Hutchinson divergence estimator E[z^T D_x(ut) z]
                     ut_dot_z = torch.einsum(
