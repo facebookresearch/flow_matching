@@ -13,6 +13,7 @@
 | Notebook | Description |
 | --- | --- |
 | [standalone_flow_matching.ipynb](standalone_flow_matching.ipynb) | A concise flow matching example built in pure PyTorch. |
+| [standalone_normal_flow_matching.ipynb](standalone_normal_flow_matching.ipynb) | Flow matching on a 1D normal distribution built in pure PyTorch. |
 | [standalone_discrete_flow_matching.ipynb](standalone_discrete_flow_matching.ipynb) | A concise discrete flow matching example built in pure PyTorch. |
 | [2d_flow_matching.ipynb](2d_flow_matching.ipynb) | 2D flow matching example on the checkerboard dataset using the flow_matching library. |
 | [2d_discrete_flow_matching.ipynb](2d_discrete_flow_matching.ipynb) | 2D discrete flow matching example on the checkerboard dataset using the flow_matching library. |
