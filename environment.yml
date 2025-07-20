@@ -4,7 +4,7 @@ channels:
   - conda-forge
   - nvidia
 dependencies:
-  - python=3.10
+  - python=23.9
   - pytorch
   - pytorch-cuda
   - matplotlib
