@@ -301,13 +301,13 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 7,
+   "execution_count": null,
    "metadata": {},
    "outputs": [],
    "source": [
     "class WrappedModel(ModelWrapper):\n",
     "    def forward(self, x: torch.Tensor, t: torch.Tensor, **extras):\n",
-    "        return torch.softmax(self.model(x, t), dim=-1)\n",
+    "        return torch.softmax(self.model(x, t, **extras), dim=-1)\n",
     "\n",
     "wrapped_probability_denoiser = WrappedModel(probability_denoiser)\n",
     "solver = MixtureDiscreteEulerSolver(model=wrapped_probability_denoiser, path=path, vocabulary_size=vocab_size)"

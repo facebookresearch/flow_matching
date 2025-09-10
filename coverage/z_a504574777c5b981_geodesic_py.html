@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Coverage for flow_matching/path/geodesic.py: 100%</title>
     <link rel="icon" sizes="32x32" href="favicon_32_cb_58284776.png">
-    <link rel="stylesheet" href="style_cb_8e611ae1.css" type="text/css">
+    <link rel="stylesheet" href="style_cb_6b508a39.css" type="text/css">
     <script src="coverage_html_cb_6fb7b396.js" defer></script>
 </head>
 <body class="pyfile">
@@ -64,8 +64,8 @@
             <a id="indexLink" class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a id="nextFileLink" class="nav" href="z_a504574777c5b981_mixture_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.8.2">coverage.py v7.8.2</a>,
-            created at 2025-05-28 14:23 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.10.6">coverage.py v7.10.6</a>,
+            created at 2025-09-10 09:42 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -169,10 +169,10 @@
     <p class="run"><span class="n"><a id="t87" href="#t87">87</a></span><span class="t">        <span class="key">def</span> <span class="nam">cond_u</span><span class="op">(</span><span class="nam">x_0</span><span class="op">,</span> <span class="nam">x_1</span><span class="op">,</span> <span class="nam">t</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t88" href="#t88">88</a></span><span class="t">            <span class="nam">path</span> <span class="op">=</span> <span class="nam">geodesic</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">manifold</span><span class="op">,</span> <span class="nam">x_0</span><span class="op">,</span> <span class="nam">x_1</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t89" href="#t89">89</a></span><span class="t">            <span class="nam">x_t</span><span class="op">,</span> <span class="nam">dx_t</span> <span class="op">=</span> <span class="nam">jvp</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t90" href="#t90">90</a></span><span class="t">                <span class="key">lambda</span> <span class="nam">t</span><span class="op">:</span> <span class="nam">path</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">scheduler</span><span class="op">(</span><span class="nam">t</span><span class="op">)</span><span class="op">.</span><span class="nam">alpha_t</span><span class="op">)</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t91" href="#t91">91</a></span><span class="t">                <span class="op">(</span><span class="nam">t</span><span class="op">,</span><span class="op">)</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t92" href="#t92">92</a></span><span class="t">                <span class="op">(</span><span class="nam">torch</span><span class="op">.</span><span class="nam">ones_like</span><span class="op">(</span><span class="nam">t</span><span class="op">)</span><span class="op">.</span><span class="nam">to</span><span class="op">(</span><span class="nam">t</span><span class="op">)</span><span class="op">,</span><span class="op">)</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t93" href="#t93">93</a></span><span class="t">            <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t90" href="#t90">90</a></span><span class="t">                <span class="key">lambda</span> <span class="nam">t</span><span class="op">:</span> <span class="nam">path</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">scheduler</span><span class="op">(</span><span class="nam">t</span><span class="op">)</span><span class="op">.</span><span class="nam">alpha_t</span><span class="op">)</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t91" href="#t91">91</a></span><span class="t">                <span class="op">(</span><span class="nam">t</span><span class="op">,</span><span class="op">)</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t92" href="#t92">92</a></span><span class="t">                <span class="op">(</span><span class="nam">torch</span><span class="op">.</span><span class="nam">ones_like</span><span class="op">(</span><span class="nam">t</span><span class="op">)</span><span class="op">.</span><span class="nam">to</span><span class="op">(</span><span class="nam">t</span><span class="op">)</span><span class="op">,</span><span class="op">)</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t93" href="#t93">93</a></span><span class="t">            <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t94" href="#t94">94</a></span><span class="t">            <span class="key">return</span> <span class="nam">x_t</span><span class="op">,</span> <span class="nam">dx_t</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t95" href="#t95">95</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t96" href="#t96">96</a></span><span class="t">        <span class="nam">x_t</span><span class="op">,</span> <span class="nam">dx_t</span> <span class="op">=</span> <span class="nam">vmap</span><span class="op">(</span><span class="nam">cond_u</span><span class="op">)</span><span class="op">(</span><span class="nam">x_0</span><span class="op">,</span> <span class="nam">x_1</span><span class="op">,</span> <span class="nam">t</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -188,8 +188,8 @@
             <a class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a class="nav" href="z_a504574777c5b981_mixture_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.8.2">coverage.py v7.8.2</a>,
-            created at 2025-05-28 14:23 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.10.6">coverage.py v7.10.6</a>,
+            created at 2025-09-10 09:42 +0000
         </p>
     </div>
 </footer>

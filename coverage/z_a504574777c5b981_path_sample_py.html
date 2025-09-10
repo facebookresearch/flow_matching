@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Coverage for flow_matching/path/path_sample.py: 100%</title>
     <link rel="icon" sizes="32x32" href="favicon_32_cb_58284776.png">
-    <link rel="stylesheet" href="style_cb_8e611ae1.css" type="text/css">
+    <link rel="stylesheet" href="style_cb_6b508a39.css" type="text/css">
     <script src="coverage_html_cb_6fb7b396.js" defer></script>
 </head>
 <body class="pyfile">
@@ -64,8 +64,8 @@
             <a id="indexLink" class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a id="nextFileLink" class="nav" href="z_0b8785edc5391bdf___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.8.2">coverage.py v7.8.2</a>,
-            created at 2025-05-28 14:23 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.10.6">coverage.py v7.10.6</a>,
+            created at 2025-09-10 09:42 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -108,11 +108,11 @@
     <p class="run"><span class="n"><a id="t26" href="#t26">26</a></span><span class="t">    <span class="nam">x_0</span><span class="op">:</span> <span class="nam">Tensor</span> <span class="op">=</span> <span class="nam">field</span><span class="op">(</span><span class="nam">metadata</span><span class="op">=</span><span class="op">{</span><span class="str">"help"</span><span class="op">:</span> <span class="str">"source samples X_0 (batch_size, ...)."</span><span class="op">}</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t27" href="#t27">27</a></span><span class="t">    <span class="nam">t</span><span class="op">:</span> <span class="nam">Tensor</span> <span class="op">=</span> <span class="nam">field</span><span class="op">(</span><span class="nam">metadata</span><span class="op">=</span><span class="op">{</span><span class="str">"help"</span><span class="op">:</span> <span class="str">"time samples t (batch_size, ...)."</span><span class="op">}</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t28" href="#t28">28</a></span><span class="t">    <span class="nam">x_t</span><span class="op">:</span> <span class="nam">Tensor</span> <span class="op">=</span> <span class="nam">field</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t29" href="#t29">29</a></span><span class="t">        <span class="nam">metadata</span><span class="op">=</span><span class="op">{</span><span class="str">"help"</span><span class="op">:</span> <span class="str">"samples x_t ~ p_t(X_t), shape (batch_size, ...)."</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t30" href="#t30">30</a></span><span class="t">    <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t29" href="#t29">29</a></span><span class="t">        <span class="nam">metadata</span><span class="op">=</span><span class="op">{</span><span class="str">"help"</span><span class="op">:</span> <span class="str">"samples x_t ~ p_t(X_t), shape (batch_size, ...)."</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t30" href="#t30">30</a></span><span class="t">    <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t31" href="#t31">31</a></span><span class="t">    <span class="nam">dx_t</span><span class="op">:</span> <span class="nam">Tensor</span> <span class="op">=</span> <span class="nam">field</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t32" href="#t32">32</a></span><span class="t">        <span class="nam">metadata</span><span class="op">=</span><span class="op">{</span><span class="str">"help"</span><span class="op">:</span> <span class="str">"conditional target dX_t, shape: (batch_size, ...)."</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t33" href="#t33">33</a></span><span class="t">    <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t32" href="#t32">32</a></span><span class="t">        <span class="nam">metadata</span><span class="op">=</span><span class="op">{</span><span class="str">"help"</span><span class="op">:</span> <span class="str">"conditional target dX_t, shape: (batch_size, ...)."</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t33" href="#t33">33</a></span><span class="t">    <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t34" href="#t34">34</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t35" href="#t35">35</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t36" href="#t36">36</a></span><span class="t"><span class="op">@</span><span class="nam">dataclass</span>&nbsp;</span><span class="r"></span></p>
@@ -131,8 +131,8 @@
     <p class="run"><span class="n"><a id="t49" href="#t49">49</a></span><span class="t">    <span class="nam">x_0</span><span class="op">:</span> <span class="nam">Tensor</span> <span class="op">=</span> <span class="nam">field</span><span class="op">(</span><span class="nam">metadata</span><span class="op">=</span><span class="op">{</span><span class="str">"help"</span><span class="op">:</span> <span class="str">"source samples X_0 (batch_size, ...)."</span><span class="op">}</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t50" href="#t50">50</a></span><span class="t">    <span class="nam">t</span><span class="op">:</span> <span class="nam">Tensor</span> <span class="op">=</span> <span class="nam">field</span><span class="op">(</span><span class="nam">metadata</span><span class="op">=</span><span class="op">{</span><span class="str">"help"</span><span class="op">:</span> <span class="str">"time samples t (batch_size, ...)."</span><span class="op">}</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t51" href="#t51">51</a></span><span class="t">    <span class="nam">x_t</span><span class="op">:</span> <span class="nam">Tensor</span> <span class="op">=</span> <span class="nam">field</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t52" href="#t52">52</a></span><span class="t">        <span class="nam">metadata</span><span class="op">=</span><span class="op">{</span><span class="str">"help"</span><span class="op">:</span> <span class="str">"samples X_t ~ p_t(X_t), shape (batch_size, ...)."</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t53" href="#t53">53</a></span><span class="t">    <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t52" href="#t52">52</a></span><span class="t">        <span class="nam">metadata</span><span class="op">=</span><span class="op">{</span><span class="str">"help"</span><span class="op">:</span> <span class="str">"samples X_t ~ p_t(X_t), shape (batch_size, ...)."</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t53" href="#t53">53</a></span><span class="t">    <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
 </main>
 <footer>
     <div class="content">
@@ -141,8 +141,8 @@
             <a class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a class="nav" href="z_0b8785edc5391bdf___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.8.2">coverage.py v7.8.2</a>,
-            created at 2025-05-28 14:23 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.10.6">coverage.py v7.10.6</a>,
+            created at 2025-09-10 09:42 +0000
         </p>
     </div>
 </footer>
