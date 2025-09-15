@@ -63,7 +63,7 @@ class Scheduler(ABC):
 class ConvexScheduler(Scheduler):
     @abstractmethod
     def __call__(self, t: Tensor) -> SchedulerOutput:
-        """Scheduler for convex paths.
+        r"""Scheduler for convex paths.
 
         Args:
             t (Tensor): times in [0,1], shape (...).
@@ -75,7 +75,7 @@ class ConvexScheduler(Scheduler):
 
     @abstractmethod
     def kappa_inverse(self, kappa: Tensor) -> Tensor:
-        """
+        r"""
         Computes :math:`t` from :math:`\kappa_t`.
 
         Args:
