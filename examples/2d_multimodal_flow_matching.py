@@ -73,69 +73,84 @@ class Swish(nn.Module):
         return torch.sigmoid(x) * x
 
 
-class DiscreteMLP(nn.Module):
+class SharedTransformer(nn.Module):
     """
-    Simple token-embedding MLP for the discrete modality.
-    Input: integer token IDs of shape (batch, 2)
-    Output: logits over the vocabulary for each token.
+    Shared Transformer trunk used by both modalities.
     """
+    def __init__(self, hidden_dim: int = 128, nhead: int = 4, num_layers: int = 2):
+        super().__init__()
+        encoder_layer = nn.TransformerEncoderLayer(d_model=hidden_dim, nhead=nhead)
+        self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)
 
+    def forward(self, x: Tensor) -> Tensor:
+        """
+        x: (seq_len, batch, hidden_dim)
+        Returns transformed tensor of same shape.
+        """
+        return self.transformer(x)
+
+
+class DiscreteTransformerModel(nn.Module):
+    """
+    Model for the discrete modality with separate input and output heads,
+    sharing a common Transformer trunk.
+    """
     def __init__(
         self,
+        shared_transformer: SharedTransformer,
         vocab_size: int = 128,
         time_dim: int = 1,
         hidden_dim: int = 128,
         length: int = 2,
     ):
         super().__init__()
-        self.input_dim = vocab_size
+        self.shared = shared_transformer
+        self.vocab_size = vocab_size
         self.time_dim = time_dim
         self.hidden_dim = hidden_dim
         self.length = length
 
         self.time_embedding = nn.Linear(1, time_dim)
-        self.token_embedding = nn.Embedding(self.input_dim, hidden_dim)
-
-        self.main = nn.Sequential(
-            Swish(),
-            nn.Linear(hidden_dim * length + time_dim, hidden_dim),
-            Swish(),
-            nn.Linear(hidden_dim, hidden_dim),
-            Swish(),
-            nn.Linear(hidden_dim, hidden_dim),
-            Swish(),
-            nn.Linear(hidden_dim, self.input_dim * length),
-        )
+        self.token_embedding = nn.Embedding(vocab_size, hidden_dim)
+        self.input_proj = nn.Linear(hidden_dim + time_dim, hidden_dim)
+        self.output_head = nn.Linear(hidden_dim, vocab_size)
+        self.activation = Swish()
 
     def sample_shape(self, batch_size: int) -> torch.Size:
-        """Return the shape of samples from the prior distribution."""
         return torch.Size((batch_size, self.length))
 
     def sample_prior(self, shape: torch.Size, device: torch.device) -> Tensor:
-        """Sample from the prior distribution (uniform over vocabulary)."""
-        return torch.randint(low=0, high=self.input_dim, size=shape, device=device)
+        return torch.randint(low=0, high=self.vocab_size, size=shape, device=device)
 
     def forward(self, x: Tensor, t: Tensor) -> Tensor:
         """
-        x : (B, 2) integer token IDs
-        t : (B,) time scalar
-        Returns logits of shape (B, 2, vocab_size)
+        x: (B, length) integer token IDs
+        t: (B,) time scalar
+        Returns logits of shape (B, length, vocab_size)
         """
         if t.ndim == 0:
             t = t.unsqueeze(0).expand(x.shape[0])
 
-        t = self.time_embedding(t.unsqueeze(-1).float())
-        x = self.token_embedding(x)
+        # Token embedding
+        x_emb = self.token_embedding(x)  # (B, length, hidden_dim)
 
-        B, N, d = x.shape
-        x = x.reshape(B, N * d)
+        # Time embedding
+        t_emb = self.time_embedding(t.unsqueeze(-1).float())  # (B, time_dim)
+        t_emb = t_emb.unsqueeze(1).expand(-1, self.length, -1)  # (B, length, time_dim)
 
-        h = torch.cat([x, t], dim=1)
-        h = self.main(h)
+        # Concatenate and project
+        h = torch.cat([x_emb, t_emb], dim=-1)  # (B, length, hidden_dim+time_dim)
+        h = self.input_proj(h)  # (B, length, hidden_dim)
 
-        h = h.reshape(B, N, self.input_dim)
+        # Transformer expects (seq_len, batch, hidden_dim)
+        h = h.permute(1, 0, 2)  # (length, B, hidden_dim)
+        h = self.shared(h)  # (length, B, hidden_dim)
+        h = h.permute(1, 0, 2)  # (B, length, hidden_dim)
 
-        return h
+        # Output logits
+        h = self.activation(h)
+        logits = self.output_head(h)  # (B, length, vocab_size)
+        return logits
 
 
 # ------------------------------
@@ -158,54 +173,64 @@ def inf_train_gen_continuous(batch_size: int = 200, device: str = "cpu") -> Tens
     return data.float()
 
 
-class ContinuousMLP(nn.Module):
+class ContinuousTransformerModel(nn.Module):
     """
-    Simple MLP that predicts the velocity field for the continuous modality.
-    Input: (B, 2) positions + (B, 1) time
-    Output: (B, 2) velocity vectors.
+    Model for the continuous modality with separate input and output heads,
+    sharing a common Transformer trunk.
     """
-
-    def __init__(self, input_dim: int = 2, time_dim: int = 1, hidden_dim: int = 128):
+    def __init__(
+        self,
+        shared_transformer: SharedTransformer,
+        input_dim: int = 2,
+        time_dim: int = 1,
+        hidden_dim: int = 128,
+    ):
         super().__init__()
+        self.shared = shared_transformer
         self.input_dim = input_dim
         self.time_dim = time_dim
         self.hidden_dim = hidden_dim
 
-        self.main = nn.Sequential(
-            nn.Linear(input_dim + time_dim, hidden_dim),
-            Swish(),
-            nn.Linear(hidden_dim, hidden_dim),
-            Swish(),
-            nn.Linear(hidden_dim, hidden_dim),
-            Swish(),
-            nn.Linear(hidden_dim, hidden_dim),
-            Swish(),
-            nn.Linear(hidden_dim, input_dim),
-        )
+        self.time_embedding = nn.Linear(1, time_dim)
+        self.position_proj = nn.Linear(input_dim, hidden_dim)
+        self.input_proj = nn.Linear(hidden_dim + time_dim, hidden_dim)
+        self.output_head = nn.Linear(hidden_dim, input_dim)
+        self.activation = Swish()
 
     def sample_shape(self, batch_size: int) -> torch.Size:
-        """Return the shape of samples from the prior distribution."""
         return torch.Size((batch_size, self.input_dim))
 
     def sample_prior(self, shape: torch.Size, device: torch.device) -> Tensor:
-        """Sample from the prior distribution (standard normal)."""
         return torch.randn(shape, device=device)
 
     def forward(self, x: Tensor, t: Tensor) -> Tensor:
         """
-        x : (B, 2) positions
-        t : (B,) time scalar
-        Returns velocity vectors of shape (B, 2)
+        x: (B, input_dim) positions
+        t: (B,) time scalar
+        Returns velocity vectors of shape (B, input_dim)
         """
-        sz = x.size()
-        x = x.reshape(-1, self.input_dim)
-        t = t.reshape(-1, self.time_dim).float()
+        if t.ndim == 0:
+            t = t.unsqueeze(0).expand(x.shape[0])
 
-        t = t.reshape(-1, 1).expand(x.shape[0], 1)
-        h = torch.cat([x, t], dim=1)
-        output = self.main(h)
+        # Position projection
+        x_emb = self.position_proj(x)  # (B, hidden_dim)
 
-        return output.reshape(*sz)
+        # Time embedding
+        t_emb = self.time_embedding(t.unsqueeze(-1).float())  # (B, time_dim)
+
+        # Concatenate and project
+        h = torch.cat([x_emb, t_emb], dim=-1)  # (B, hidden_dim+time_dim)
+        h = self.input_proj(h)  # (B, hidden_dim)
+
+        # Transformer expects (seq_len, batch, hidden_dim) with seq_len=1
+        h = h.unsqueeze(0)  # (1, B, hidden_dim)
+        h = self.shared(h)  # (1, B, hidden_dim)
+        h = h.squeeze(0)  # (B, hidden_dim)
+
+        # Output velocity
+        h = self.activation(h)
+        velocity = self.output_head(h)  # (B, input_dim)
+        return velocity
 
 
 # ------------------------------
@@ -218,15 +243,25 @@ added_token = 0  # uniform source distribution → no extra token
 vocab_size += added_token
 length = 2  # 2 tokens per sample
 
-discrete_model = DiscreteMLP(
-    vocab_size=vocab_size, time_dim=1, hidden_dim=128, length=length
+# Shared transformer trunk
+shared_transformer = SharedTransformer(hidden_dim=128, nhead=4, num_layers=2).to(device)
+
+discrete_model = DiscreteTransformerModel(
+    shared_transformer=shared_transformer,
+    vocab_size=vocab_size,
+    time_dim=1,
+    hidden_dim=128,
+    length=length,
 ).to(device)
 discrete_path = MixtureDiscreteProbPath(scheduler=PolynomialConvexScheduler(n=2.0))
 
 # ---- Continuous side -----------------------------------------------
-continuous_model = ContinuousMLP(input_dim=length, time_dim=1, hidden_dim=512).to(
-    device
-)
+continuous_model = ContinuousTransformerModel(
+    shared_transformer=shared_transformer,
+    input_dim=length,
+    time_dim=1,
+    hidden_dim=128,
+).to(device)
 continuous_path = AffineProbPath(scheduler=CondOTScheduler())
 
 # ---- Assemble modalities dict ---------------------------------------
