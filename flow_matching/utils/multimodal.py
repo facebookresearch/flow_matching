@@ -1,33 +1,34 @@
-"""
-Generic multimodal flow matching class.
-
-This class aggregates multiple modalities, each with its own model, path,
-scheduler, and loss. It provides utilities for training (computing the total
-loss) and inference (sampling) across all modalities.
-"""
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+# All rights reserved.
+#
+# This source code is licensed under the CC-by-NC license found in the
+# LICENSE file in the root directory of this source tree.
 
 import torch
 from torch import nn, Tensor
 from typing import Dict, Optional, Tuple, Callable, Any
 
-# Flow matching components
+# flow_matching
+from flow_matching.loss.generalized_loss import MixturePathGeneralizedKL
+from flow_matching.path.mixture import MixtureDiscreteProbPath
 from flow_matching.path.scheduler import Scheduler
 from flow_matching.path.scheduler.schedule_transform import ScheduleTransformedModel
 from flow_matching.solver import MixtureDiscreteEulerSolver
 from flow_matching.solver.ode_solver import ODESolver
 from flow_matching.utils import ModelWrapper
-from flow_matching.loss.generalized_loss import MixturePathGeneralizedKL
-
-# Attempt to import the discrete probability path class; if unavailable, the user
-# must provide a compatible path object.
-try:
-    from flow_matching.path.mixture import MixtureDiscreteProbPath
-except Exception:  # pragma: no cover
-    MixtureDiscreteProbPath = None  # type: ignore
 
 
 def _default_continuous_loss(pred: Tensor, target: Tensor) -> Tensor:
-    """Mean squared error loss for continuous modalities."""
+    """
+    Mean squared error loss for continuous modalities.
+    
+    Args:
+        pred (Tensor): predicted velocity field.
+        target (Tensor): target velocity field.
+
+    Returns:
+        Tensor: mean squared error loss.
+    """
     return torch.mean((pred - target) ** 2)
 
 
@@ -35,19 +36,20 @@ class Flow(nn.Module):
     """
     Generic multimodal flow matching model.
 
-    Parameters
-    ----------
-    modalities : dict
-        Mapping from modality name to a dict with keys:
-            - "model": nn.Module (or ModelWrapper) that implements the velocity model.
-            - "path": a probability path object (e.g., MixtureDiscreteProbPath for discrete data,
-              or any continuous path implementation).
-            - "loss" (optional): a callable loss function. If omitted, a default loss is chosen
-              based on the path type.
-    training_scheduler (optional): Scheduler
-        Scheduler used during training.
-    inference_scheduler (optional): Scheduler
-        Scheduler used during inference (sampling).
+    This class aggregates multiple modalities, each with its own model, path,
+    scheduler, and loss. It provides utilities for training (computing the total
+    loss) and inference (sampling) across all modalities.
+
+    Args:
+        modalities (dict):
+            Mapping from modality name to a dict with keys:
+                - "model": nn.Module (or ModelWrapper) that implements the velocity model.
+                - "path": a probability path object (e.g., MixtureDiscreteProbPath for discrete data,
+                or any continuous path implementation).
+                - "loss" (optional): a callable loss function. If omitted, a default loss is chosen
+                based on the path type.
+        training_scheduler (Scheduler, optional): Scheduler used during training.
+        inference_scheduler (Scheduler, optional): Scheduler used during inference (sampling).
     """
 
     def __init__(
@@ -75,9 +77,7 @@ class Flow(nn.Module):
             # Choose loss function
             loss_fn = spec.get("loss")
             if loss_fn is None:
-                if MixtureDiscreteProbPath is not None and isinstance(
-                    path, MixtureDiscreteProbPath
-                ):
+                if isinstance(path, MixtureDiscreteProbPath):
                     loss_fn = MixturePathGeneralizedKL(path)
                 else:
                     loss_fn = _default_continuous_loss
@@ -91,18 +91,13 @@ class Flow(nn.Module):
         """
         Compute the total training loss across all modalities.
 
-        Parameters
-        ----------
-        inputs : dict
-            Mapping from modality name to a tuple ``(x_1, x_t)`` where ``x_1`` is the data at
-            time ``0`` and ``x_t`` is the data at the sampled time ``t``.
-        t : Tensor
-            Tensor of shape ``(batch,)`` containing the time values.
+        Args:
+            inputs (dict): Mapping from modality name to a tuple ``(x_1, x_t)`` where ``x_1`` is the data at
+                time ``0`` and ``x_t`` is the data at the sampled time ``t``.
+            t (Tensor): Tensor of shape ``(batch,)`` containing the time values.
 
-        Returns
-        -------
-        Tensor
-            Scalar loss (sum of modality losses).
+        Returns:
+            Tensor: scalar loss (sum of modality losses).
         """
         total_loss = 0.0
         for name, (x_1, x_t, dx_t) in inputs.items():
@@ -110,9 +105,7 @@ class Flow(nn.Module):
             path = self.paths[name]
             loss_fn = self.loss_fns[name]
 
-            if MixtureDiscreteProbPath is not None and isinstance(
-                path, MixtureDiscreteProbPath
-            ):
+            if isinstance(path, MixtureDiscreteProbPath):
                 # Discrete case: model should output logits.
                 logits = model(x=x_t, t=t)
                 loss = loss_fn(logits, x_1, x_t, t)
@@ -135,19 +128,13 @@ class Flow(nn.Module):
         """
         Generate samples for each modality using the inference scheduler.
 
-        Parameters
-        ----------
-        batch_size : int
-            Number of samples to generate.
-        device : torch.device, optional
-            Device on which to run the sampling.
-        steps : int, optional
-            Number of integration steps for the ODE solver.
+        Args:
+            batch_size (int): Number of samples to generate.
+            device (torch.device, optional): Device on which to run the sampling.
+            steps (int, optional): Number of integration steps for the ODE solver.
 
-        Returns
-        -------
-        dict
-            Mapping from modality name to sampled tensor.
+        Returns:
+            dict: mapping from modality name to sampled tensor.
         """
         xs: Dict[str, Tensor] = {}
         for name, model in self.modalities.items():
@@ -177,9 +164,7 @@ class Flow(nn.Module):
 
             # Set up ODE solver.
             solver = ODESolver(velocity_model=velocity_model)
-            if MixtureDiscreteProbPath is not None and isinstance(
-                path, MixtureDiscreteProbPath
-            ):
+            if isinstance(path, MixtureDiscreteProbPath):
 
                 class WrappedModel(ModelWrapper):
                     """Wrap velocity model to output probabilities."""
