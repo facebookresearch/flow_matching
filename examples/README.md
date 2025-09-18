@@ -16,6 +16,6 @@
 | [standalone_discrete_flow_matching.ipynb](standalone_discrete_flow_matching.ipynb) | A concise discrete flow matching example built in pure PyTorch. |
 | [2d_flow_matching.ipynb](2d_flow_matching.ipynb) | 2D flow matching example on the checkerboard dataset using the flow_matching library. |
 | [2d_discrete_flow_matching.ipynb](2d_discrete_flow_matching.ipynb) | 2D discrete flow matching example on the checkerboard dataset using the flow_matching library. |
+| [2d_multimodal_flow_matching.ipynb](2d_multimodal_flow_matching.ipynb) | 2D multimodal (discrete-continuous) flow matching on the checkerboard dataset and the flow_matching library. |
 | [2d_riemannian_flow_matching_flat_torus.ipynb](2d_riemannian_flow_matching_flat_torus.ipynb) | 2D Riemannian flow matching on a flat torus on the checkerboard dataset and the flow_matching library. |
 | [2d_riemannian_flow_matching_sphere.ipynb](2d_riemannian_flow_matching_sphere.ipynb) | 2D Riemannian flow matching on a sphere on the checkerboard dataset and the flow_matching library. |
-| [2d_multimodal_flow_matching.ipynb](2d_multimodal_flow_matching.ipynb) | 2D multimodal (discrete-continuous) flow matching on the checkerboard dataset and the flow_matching library. |

@@ -29,4 +29,10 @@ Notebooks
    :image: _static/riemannian_torus.png
    :link: notebooks/2d_riemannian_flow_matching_flat_torus.html
 
+.. customcarditem::
+   :header: Multimodal Flow Matching
+   :card_description: Train and sample from a 2D Multimodal Flow Matching model.
+   :image: _static/multimodal.png
+   :link: notebooks/2d_multimodal_flow_matching.html
+
 .. customcardend::
