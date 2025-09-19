@@ -4,9 +4,10 @@
 # This source code is licensed under the CC-by-NC license found in the
 # LICENSE file in the root directory of this source tree.
 
+from typing import Any, Callable, Dict, Optional, Tuple
+
 import torch
 from torch import nn, Tensor
-from typing import Dict, Optional, Tuple, Callable, Any
 
 # flow_matching
 from flow_matching.loss.generalized_loss import MixturePathGeneralizedKL
@@ -21,7 +22,7 @@ from flow_matching.utils import ModelWrapper
 def _default_continuous_loss(pred: Tensor, target: Tensor) -> Tensor:
     """
     Mean squared error loss for continuous modalities.
-    
+
     Args:
         pred (Tensor): predicted velocity field.
         target (Tensor): target velocity field.
@@ -41,15 +42,18 @@ class Flow(nn.Module):
     loss) and inference (sampling) across all modalities.
 
     Args:
-        modalities (dict):
+        modalities (Dict[str, Dict[str, Any]]):
             Mapping from modality name to a dict with keys:
                 - "model": nn.Module (or ModelWrapper) that implements the velocity model.
                 - "path": a probability path object (e.g., MixtureDiscreteProbPath for discrete data,
                 or any continuous path implementation).
                 - "loss" (optional): a callable loss function. If omitted, a default loss is chosen
                 based on the path type.
-        training_scheduler (Scheduler, optional): Scheduler used during training.
-        inference_scheduler (Scheduler, optional): Scheduler used during inference (sampling).
+        training_scheduler (Optional[Scheduler]): Scheduler used during training.
+        inference_scheduler (Optional[Scheduler]): Scheduler used during inference (sampling).
+
+    Raises:
+        TypeError: if any model is not an instance of nn.Module.
     """
 
     def __init__(
@@ -92,7 +96,7 @@ class Flow(nn.Module):
         Compute the total training loss across all modalities.
 
         Args:
-            inputs (dict): Mapping from modality name to a tuple ``(x_1, x_t)`` where ``x_1`` is the data at
+            inputs (Dict[str, Tuple[Tensor, Tensor]]): Mapping from modality name to a tuple ``(x_1, x_t)`` where ``x_1`` is the data at
                 time ``0`` and ``x_t`` is the data at the sampled time ``t``.
             t (Tensor): Tensor of shape ``(batch,)`` containing the time values.
 
@@ -134,7 +138,7 @@ class Flow(nn.Module):
             steps (int, optional): Number of integration steps for the ODE solver.
 
         Returns:
-            dict: mapping from modality name to sampled tensor.
+            Dict[str, Tensor]: mapping from modality name to sampled tensor.
         """
         xs: Dict[str, Tensor] = {}
         for name, model in self.modalities.items():
