@@ -148,7 +148,7 @@ class MultimodalSolver(Solver):
                 t = t_discretization[i : i + 1]
                 h = t_discretization[i + 1] - t_discretization[i]
 
-                outputs = self.model(x=states, t=t, **model_extras)
+                outputs = self.model(states, t, **model_extras)
 
                 if not isinstance(outputs, (list, tuple)) or len(outputs) != len(
                     states
