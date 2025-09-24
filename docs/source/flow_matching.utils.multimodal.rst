@@ -1,16 +1,18 @@
-``flow_matching.utils.model_wrapper``
+``flow_matching.utils.multimodal``
 =============================
 
-.. currentmodule:: flow_matching.utils.model_wrapper
+.. currentmodule:: flow_matching.utils.multimodal
 
 
-ModelWrapper
+Flow
 --------------------------------
+
+Generic multimodal flow class
 
 .. autosummary::
    :toctree: generated
    :nosignatures:
    :template: classtemplate.rst
 
-   ModelWrapper
+   Flow
 
