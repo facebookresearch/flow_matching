@@ -22,7 +22,7 @@ def _default_continuous_loss(
     pred: Tensor, target: Tensor, reduction: str = "none"
 ) -> Tensor:
     """
-    Mean squared error loss for continuous modalities.
+    Squared error loss for continuous modalities.
 
     Args:
         pred (Tensor): predicted velocity field.
