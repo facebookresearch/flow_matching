@@ -49,10 +49,11 @@ class Flow(nn.Module):
             posterior probability `p_1t`.
         modalities (Dict[str, Dict[str, Any]]):
             Mapping from modality name to a dict with keys:
-                - "path": a probability path object (e.g., MixtureDiscreteProbPath for discrete data,
+                - "path": A probability path object (e.g., MixtureDiscreteProbPath for discrete data,
                 or any continuous path implementation).
-                - "loss" (optional): a callable loss function. If omitted, a default loss is chosen
+                - "loss" (optional): A callable loss function. If omitted, a default loss is chosen
                 based on the path type.
+                - "weight" (optional): A float weight for the modality's training loss. Defaults to 1.0.
     """
 
     def __init__(
@@ -64,6 +65,7 @@ class Flow(nn.Module):
         self.model = model
         self.paths: Dict[str, Any] = {}
         self.loss_fns: Dict[str, Callable] = {}
+        self.loss_weights: Dict[str, float] = {}
 
         for name, spec in modalities.items():
             path = spec["path"]
@@ -77,6 +79,7 @@ class Flow(nn.Module):
                 else:
                     loss_fn = _default_continuous_loss
             self.loss_fns[name] = loss_fn
+            self.loss_weights[name] = spec.get("weight", 1.0)
 
     def training_loss(
         self,
@@ -134,7 +137,8 @@ class Flow(nn.Module):
                 loss = loss_fn(logits[i], dx_t[i])
 
             loss_dict[name] = loss.detach()
-            total_loss = total_loss + loss
+            weight = self.loss_weights.get(name, 1.0)
+            total_loss = total_loss + loss * weight
 
         return total_loss, loss_dict
 

@@ -155,6 +155,36 @@ class TestFlow(unittest.TestCase):
         with self.assertRaises(AssertionError):
             self.flow.sample([x_init_disc, x_init_cont], steps=5)
 
+    def test_custom_loss_weights(self):
+        # Define modalities with custom loss weights
+        modalities = {
+            "disc": {"path": self.discrete_path, "weight": 0.5},
+            "cont": {"path": self.continuous_path, "weight": 2.0},
+        }
+        flow = Flow(model=self.model, modalities=modalities)
+
+        # Prepare inputs
+        batch = 3
+        x1_disc = torch.randint(0, self.num_classes, (batch,))
+        x_t_disc = torch.randint(0, self.num_classes, (batch,))
+        x1_cont = torch.randn(batch, 2)
+        x_t_cont = torch.randn(batch, 2)
+        dx_t_cont = torch.randn(batch, 2)
+        x_1 = [x1_disc, x1_cont]
+        x_t = [x_t_disc, x_t_cont]
+        dx_t = [None, dx_t_cont]
+        t = [torch.rand(batch), torch.rand(batch)]
+
+        total_loss, loss_dict = flow.training_loss(x_1, x_t, dx_t, t)
+
+        # Compute expected weighted total loss
+        expected_total = loss_dict["disc"] * 0.5 + loss_dict["cont"] * 2.0
+        self.assertTrue(torch.allclose(total_loss, expected_total))
+
+        # Verify that loss_weights are stored correctly
+        self.assertEqual(flow.loss_weights["disc"], 0.5)
+        self.assertEqual(flow.loss_weights["cont"], 2.0)
+
 
 if __name__ == "__main__":
     unittest.main()
