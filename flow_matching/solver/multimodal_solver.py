@@ -183,9 +183,11 @@ class MultimodalSolver(Solver):
                     time_grid=time_grid, t_discretization=t_discretization
                 )
 
-        states: Sequence[Tensor] = [x.clone() for x in x_init]
+        states: Sequence[Tensor] = [(x if enable_grad else x.clone()) for x in x_init]
         intermediates: Sequence[List[Tensor]] = (
-            [[x.clone()] for x in x_init] if return_intermediates else []
+            [[x if enable_grad else x.clone()] for x in x_init]
+            if return_intermediates
+            else []
         )
 
         steps_counter = 0
@@ -290,7 +292,7 @@ class MultimodalSolver(Solver):
                 if return_intermediates:
                     for idx, s in enumerate(states):
                         if t[idx] in time_grid:
-                            intermediates[idx].append(s.clone())
+                            intermediates[idx].append(s if enable_grad else s.clone())
 
                 if verbose:
                     ctx.n = (torch.cat(t) * n_steps).mean().long().item()
