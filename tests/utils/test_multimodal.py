@@ -178,7 +178,7 @@ class TestFlow(unittest.TestCase):
         total_loss, loss_dict = flow.training_loss(x_1, x_t, dx_t, t)
 
         # Compute expected weighted total loss
-        expected_total = loss_dict["disc"].mean() * 0.5 + loss_dict["cont"].mean() * 2.0
+        expected_total = loss_dict["disc"].mean() + loss_dict["cont"].mean()
         self.assertTrue(torch.allclose(total_loss, expected_total))
 
         # Verify that loss_weights are stored correctly

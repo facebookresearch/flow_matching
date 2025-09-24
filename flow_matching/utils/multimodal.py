@@ -155,8 +155,8 @@ class Flow(nn.Module):
                 )
                 loss = loss_fn(logits[i], dx_t[i])
 
-            loss_dict[name] = loss.detach() if detach_loss_dict else loss
             weight = self.loss_weights.get(name, 1.0)
+            loss_dict[name] = (loss.detach() if detach_loss_dict else loss) * weight
             total_loss = total_loss + loss.mean() * weight
 
         return total_loss, loss_dict
