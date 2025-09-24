@@ -199,8 +199,9 @@ class Flow(nn.Module):
             x_init[i] = x_init[i].to(device)
 
         # Set up Euler solver for each modality.
-        modality_configs = {
-            name: {
+        modality_configs = [
+            {
+                "name": name,
                 "type": (
                     "discrete"
                     if isinstance(path, MixtureDiscreteProbPath)
@@ -209,7 +210,7 @@ class Flow(nn.Module):
                 "path": path,
             }
             for name, path in self.paths.items()
-        }
+        ]
         solver = MultimodalSolver(
             model=self.model,
             modality_configs=modality_configs,
@@ -227,7 +228,7 @@ class Flow(nn.Module):
             time_grid=time_grid,
             return_intermediates=return_intermediates,
             enable_grad=enable_grad,
-            model_extras=model_extras,
+            **model_extras,
         )
 
         return samples

@@ -172,7 +172,7 @@ class MultimodalSolver(Solver):
             n_steps = ceil((t_final - t_init) / step_size)
             t_discretization = torch.tensor(
                 [t_init + step_size * i for i in range(n_steps)] + [t_final],
-                device=x_init.device,
+                device=device,
             )
 
             if return_intermediates:
@@ -225,14 +225,14 @@ class MultimodalSolver(Solver):
                         dtype = config.get("dtype_categorical", torch.float32)
 
                         # Sample x_1 ~ p_1|t( \cdot |x_t)
-                        p_1t = model_output
+                        p_1t = torch.softmax(model_output, dim=-1)
                         x_1 = categorical(p_1t.to(dtype=dtype))
 
                         # Checks if final step
                         if i == n_steps - 1:
                             states[idx] = x_1  # x_t = x_1 at final step
                         else:
-                            vocabulary_size = p_1t.shape[1]
+                            vocabulary_size = p_1t.shape[-1]
                             if self.source_distribution_p is not None:
                                 assert self.source_distribution_p.shape == torch.Size(
                                     [vocabulary_size]
@@ -240,7 +240,7 @@ class MultimodalSolver(Solver):
 
                             # Compute u_t(x|x_t,x_1)
                             path: MixtureDiscreteProbPath = config["path"]
-                            scheduler_output = path.scheduler(t=t[idx])
+                            scheduler_output = path.scheduler(t=t[idx][:, None, None])
 
                             k_t = scheduler_output.alpha_t
                             d_k_t = scheduler_output.d_alpha_t
@@ -293,7 +293,7 @@ class MultimodalSolver(Solver):
                             intermediates[idx].append(s.clone())
 
                 if verbose:
-                    ctx.n = torch.cat(t).mean().long().item()
+                    ctx.n = (torch.cat(t) * n_steps).mean().long().item()
                     ctx.refresh()
                     ctx.set_description(f"NFE: {steps_counter}")
 
