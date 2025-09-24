@@ -14,5 +14,6 @@ Solvers
    Solver
    ODESolver
    MixtureDiscreteEulerSolver
+   MultimodalSolver
    RiemannianODESolver
 

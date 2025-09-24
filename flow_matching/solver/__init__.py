@@ -14,5 +14,6 @@ __all__ = [
     "Solver",
     "ModelWrapper",
     "MixtureDiscreteEulerSolver",
+    "MultimodalSolver",
     "RiemannianODESolver",
 ]
