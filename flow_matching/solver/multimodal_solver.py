@@ -49,7 +49,9 @@ class MultimodalSolver(Solver):
             Each dictionary must have a ``'type'`` key, which is either
             ``'continuous'`` or ``'discrete'``. Discrete modality configs must
             also provide a ``'path'`` key with a `MixtureDiscreteProbPath` object.
-        source_distribution_p (Optional[Tensor], optional): Source distribution, must be of shape [vocabulary_size]. Required only when divergence-free term for the probability velocity is non-zero. Defaults to None.
+        source_distribution_p (Optional[Tensor], optional): Source distribution,
+            must be of shape [vocabulary_size]. Required only when divergence-free
+            term for the probability velocity is non-zero. Defaults to None.
 
     Raises:
         TypeError: If `model` is not callable.
@@ -243,9 +245,9 @@ class MultimodalSolver(Solver):
                             k_t = scheduler_output.alpha_t
                             d_k_t = scheduler_output.d_alpha_t
 
-                            delta_1 = F.one_hot(
-                                x_1, num_classes=self.vocabulary_size
-                            ).to(k_t.dtype)
+                            delta_1 = F.one_hot(x_1, num_classes=vocabulary_size).to(
+                                k_t.dtype
+                            )
                             u = d_k_t / (1 - k_t) * delta_1
 
                             # Add divergence-free part
@@ -263,7 +265,7 @@ class MultimodalSolver(Solver):
 
                             # Set u_t(x_t|x_t,x_1) = 0
                             delta_t = F.one_hot(
-                                states[idx], num_classes=self.vocabulary_size
+                                states[idx], num_classes=vocabulary_size
                             )
                             u = torch.where(
                                 delta_t.to(dtype=torch.bool), torch.zeros_like(u), u
