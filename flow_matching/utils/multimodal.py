@@ -18,18 +18,33 @@ from flow_matching.solver.multimodal_solver import MultimodalSolver
 MULTIMODAL_METHOD = Literal["euler"]
 
 
-def _default_continuous_loss(pred: Tensor, target: Tensor) -> Tensor:
+def _default_continuous_loss(
+    pred: Tensor, target: Tensor, reduction: str = "none"
+) -> Tensor:
     """
     Mean squared error loss for continuous modalities.
 
     Args:
         pred (Tensor): predicted velocity field.
         target (Tensor): target velocity field.
+        reduction (str): reduction method, one of 'mean', 'sum', or 'none'.
+
+    Raises:
+        ValueError: if reduction is not one of 'none', 'mean', or 'sum'.
 
     Returns:
-        Tensor: mean squared error loss.
+        Tensor: computed loss.
     """
-    return torch.mean((pred - target) ** 2)
+    loss = (pred - target) ** 2
+
+    if reduction == "mean":
+        return torch.mean(loss)
+    elif reduction == "sum":
+        return torch.sum(loss)
+    elif reduction == "none":
+        return loss
+    else:
+        raise ValueError("reduction must be one of 'none', 'mean', or 'sum'")
 
 
 class Flow(nn.Module):
@@ -75,7 +90,7 @@ class Flow(nn.Module):
             loss_fn = spec.get("loss")
             if loss_fn is None:
                 if isinstance(path, MixtureDiscreteProbPath):
-                    loss_fn = MixturePathGeneralizedKL(path)
+                    loss_fn = MixturePathGeneralizedKL(path, reduction="none")
                 else:
                     loss_fn = _default_continuous_loss
             self.loss_fns[name] = loss_fn
@@ -87,6 +102,7 @@ class Flow(nn.Module):
         x_t: Sequence[Tensor],
         dx_t: Sequence[Tensor],
         t: Sequence[Tensor],
+        detach_loss_dict: bool = True,
         **model_extras: dict,
     ) -> Tuple[Sequence[Tensor], Dict[str, Tensor]]:
         """
@@ -101,6 +117,9 @@ class Flow(nn.Module):
                 containing the velocity field at time t.
             t (Sequence[Tensor]): Sequence of tensors, one per modality,
                 containing the time values.
+            detach_loss_dict (bool): If ``True``, detaches individual modality losses
+                from the computation graph when storing them in the loss dictionary.
+                Defaults to ``True``.
             **model_extras (dict): Additional keyword arguments to pass to the model.
 
         Returns:
@@ -136,9 +155,9 @@ class Flow(nn.Module):
                 )
                 loss = loss_fn(logits[i], dx_t[i])
 
-            loss_dict[name] = loss.detach()
+            loss_dict[name] = loss.detach() if detach_loss_dict else loss
             weight = self.loss_weights.get(name, 1.0)
-            total_loss = total_loss + loss * weight
+            total_loss = total_loss + loss.mean() * weight
 
         return total_loss, loss_dict
 

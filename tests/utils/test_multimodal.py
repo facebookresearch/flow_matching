@@ -106,10 +106,10 @@ class TestFlow(unittest.TestCase):
         # Each entry should be a scalar tensor
         for loss in loss_dict.values():
             self.assertIsInstance(loss, torch.Tensor)
-            self.assertEqual(loss.dim(), 0)
+            self.assertEqual(loss.mean().dim(), 0)
 
         # Total loss should equal sum of individual losses
-        summed = sum(loss for loss in loss_dict.values())
+        summed = sum(loss.mean() for loss in loss_dict.values())
         self.assertTrue(torch.allclose(total_loss, summed))
 
     def test_training_loss_mismatched_lengths(self):
@@ -178,7 +178,7 @@ class TestFlow(unittest.TestCase):
         total_loss, loss_dict = flow.training_loss(x_1, x_t, dx_t, t)
 
         # Compute expected weighted total loss
-        expected_total = loss_dict["disc"] * 0.5 + loss_dict["cont"] * 2.0
+        expected_total = loss_dict["disc"].mean() * 0.5 + loss_dict["cont"].mean() * 2.0
         self.assertTrue(torch.allclose(total_loss, expected_total))
 
         # Verify that loss_weights are stored correctly
