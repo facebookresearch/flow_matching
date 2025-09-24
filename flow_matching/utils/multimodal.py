@@ -145,6 +145,7 @@ class Flow(nn.Module):
         device: torch.device = torch.device("cpu"),
         steps: int = 1000,
         step_size: Optional[float] = None,
+        div_free: Union[float, Callable[[float], float]] = 0.0,
         method: MULTIMODAL_METHOD = "euler",
         return_intermediates: bool = False,
         enable_grad: bool = False,
@@ -164,6 +165,10 @@ class Flow(nn.Module):
             steps (int, optional): Number of integration steps for the ODE solver.
             step_size (Optional[float]): Fixed step size for uniform discretization.
                 If ``None``, the step size is computed from ``steps``.
+            div_free (Union[float, Callable[[float], float]]): The coefficient
+                of the divergence-free term in the probability velocity
+                (for discrete modalities). Can be either a float or a time
+                dependent function. Defaults to 0.0.
             method (MULTIMODAL_METHOD): Numerical integration method. Currently only ``"euler"`` is
                 supported, representing a single forward step.
             return_intermediates (bool): If ``True``, returns a list of tensors for
@@ -217,6 +222,7 @@ class Flow(nn.Module):
         samples = solver.sample(
             x_init=x_init,
             step_size=step_size,
+            div_free=div_free,
             method=method,
             time_grid=time_grid,
             return_intermediates=return_intermediates,

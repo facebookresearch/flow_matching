@@ -380,7 +380,7 @@ for i in range(iterations):
     x_1 = [x1_disc, x1_cont]
     x_t = [disc_path_sample.x_t, cont_path_sample.x_t]
     dx_t = [None, cont_path_sample.dx_t]  # NOTE: dx_t is None for discrete
-    ts = [t, t]
+    ts = [t, t]  # NOTE: For now, both modalities share the same time
 
     # ---- Compute total loss and back‑propagate -------------------------
     loss, _ = flow.training_loss(x_1=x_1, x_t=x_t, dx_t=dx_t, t=ts)
