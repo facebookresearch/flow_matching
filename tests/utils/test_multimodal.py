@@ -185,6 +185,42 @@ class TestFlow(unittest.TestCase):
         self.assertEqual(flow.loss_weights["disc"], 0.5)
         self.assertEqual(flow.loss_weights["cont"], 2.0)
 
+    def test_training_loss_with_logits_argument(self):
+        batch = 3
+        # Discrete tensors (int64)
+        x1_disc = torch.randint(0, self.num_classes, (batch,))
+        x_t_disc = torch.randint(0, self.num_classes, (batch,))
+        # Continuous tensors (float32)
+        x1_cont = torch.randn(batch, 2)
+        x_t_cont = torch.randn(batch, 2)
+        dx_t_cont = torch.randn(batch, 2)
+        x_1 = [x1_disc, x1_cont]
+        x_t = [x_t_disc, x_t_cont]
+        dx_t = [None, dx_t_cont]
+        t = [torch.rand(batch), torch.rand(batch)]
+
+        # Deterministic logits for discrete and continuous modalities
+        logits_disc = torch.full((batch, self.num_classes), 0.5)
+        logits_cont = torch.full_like(dx_t_cont, 0.1)
+        logits = [logits_disc, logits_cont]
+
+        # Ensure model forward is not called when logits are provided
+        with patch.object(
+            self.flow.model,
+            "forward",
+            side_effect=AssertionError("Model forward should not be called"),
+        ):
+            total_loss, loss_dict = self.flow.training_loss(
+                x_1, x_t, dx_t, t, logits=logits
+            )
+
+        # Verify total loss is scalar and matches sum of individual losses
+        self.assertIsInstance(total_loss, torch.Tensor)
+        self.assertEqual(total_loss.dim(), 0)
+        self.assertSetEqual(set(loss_dict.keys()), {"disc", "cont"})
+        summed = sum(loss.mean() for loss in loss_dict.values())
+        self.assertTrue(torch.allclose(total_loss, summed))
+
 
 if __name__ == "__main__":
     unittest.main()

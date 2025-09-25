@@ -102,6 +102,7 @@ class Flow(nn.Module):
         x_t: Sequence[Tensor],
         dx_t: Sequence[Tensor],
         t: Sequence[Tensor],
+        logits: Optional[Sequence[Tensor]] = None,
         detach_loss_dict: bool = True,
         **model_extras: dict,
     ) -> Tuple[Sequence[Tensor], Dict[str, Tensor]]:
@@ -117,6 +118,8 @@ class Flow(nn.Module):
                 containing the velocity field at time t.
             t (Sequence[Tensor]): Sequence of tensors, one per modality,
                 containing the time values.
+            logits (Optional[Sequence[Tensor]]): Optional precomputed model outputs.
+                If provided, these are used instead of calling the model.
             detach_loss_dict (bool): If ``True``, detaches individual modality losses
                 from the computation graph when storing them in the loss dictionary.
                 Defaults to ``True``.
@@ -131,10 +134,15 @@ class Flow(nn.Module):
             len(x_1) == len(x_t) == len(dx_t) == len(t) == len(self.paths)
         ), "Input sequences must match the number of modalities."
 
+        if logits is not None:
+            assert len(logits) == len(
+                self.paths
+            ), "If provided, logits must match the number of modalities."
+
         loss_dict = {}
         total_loss = 0.0
 
-        logits = self.model(x_t, t, **model_extras)
+        logits = logits or self.model(x_t, t, **model_extras)
 
         for i, name in enumerate(self.paths):
             path = self.paths[name]
