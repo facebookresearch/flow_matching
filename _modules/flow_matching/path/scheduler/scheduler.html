@@ -402,7 +402,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">ConvexScheduler</span><span class="p">(</span><span class="n">Scheduler</span><span class="p">):</span>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SchedulerOutput</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scheduler for convex paths.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Scheduler for convex paths.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            t (Tensor): times in [0,1], shape (...).</span>
@@ -414,7 +414,7 @@
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">kappa_inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kappa</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes :math:`t` from :math:`\kappa_t`.</span>
 
 <span class="sd">        Args:</span>
