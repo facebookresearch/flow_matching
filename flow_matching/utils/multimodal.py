@@ -4,7 +4,7 @@
 # This source code is licensed under the CC-by-NC license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import Any, Callable, Dict, List, Literal, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, List, Literal, Optional, Tuple, Union
 
 import torch
 from torch import nn, Tensor
@@ -98,27 +98,27 @@ class Flow(nn.Module):
 
     def training_loss(
         self,
-        x_1: Sequence[Tensor],
-        x_t: Sequence[Tensor],
-        dx_t: Sequence[Tensor],
-        t: Sequence[Tensor],
-        logits: Optional[Sequence[Tensor]] = None,
+        x_1: List[Tensor],
+        x_t: List[Tensor],
+        dx_t: List[Tensor],
+        t: List[Tensor],
+        logits: Optional[List[Tensor]] = None,
         detach_loss_dict: bool = True,
         **model_extras: dict,
-    ) -> Tuple[Sequence[Tensor], Dict[str, Tensor]]:
+    ) -> Tuple[List[Tensor], Dict[str, Tensor]]:
         """
         Compute the total training loss across all modalities.
 
         Args:
-            x_1 (Sequence[Tensor]): Sequence of tensors, one per modality,
+            x_1 (List[Tensor]): List of tensors, one per modality,
                 containing the data at time 1.
-            x_t (Sequence[Tensor]): Sequence of tensors, one per modality,
+            x_t (List[Tensor]): List of tensors, one per modality,
                 containing the data at time t.
-            dx_t (Sequence[Tensor]): Sequence of tensors, one per modality,
+            dx_t (List[Tensor]): List of tensors, one per modality,
                 containing the velocity field at time t.
-            t (Sequence[Tensor]): Sequence of tensors, one per modality,
+            t (List[Tensor]): List of tensors, one per modality,
                 containing the time values.
-            logits (Optional[Sequence[Tensor]]): Optional precomputed model outputs.
+            logits (Optional[List[Tensor]]): Optional precomputed model outputs.
                 If provided, these are used instead of calling the model.
             detach_loss_dict (bool): If ``True``, detaches individual modality losses
                 from the computation graph when storing them in the loss dictionary.
@@ -126,7 +126,7 @@ class Flow(nn.Module):
             **model_extras (dict): Additional keyword arguments to pass to the model.
 
         Returns:
-            Tuple[Sequence[Tensor], Dict[str, Tensor]]:
+            Tuple[List[Tensor], Dict[str, Tensor]]:
                 Scalar loss (sum of modality losses) and a dictionary
                 of individual modality losses.
         """
@@ -171,7 +171,7 @@ class Flow(nn.Module):
 
     def sample(
         self,
-        x_init: Sequence[Tensor],
+        x_init: List[Tensor],
         time_grid: Optional[Tensor] = None,
         device: torch.device = torch.device("cpu"),
         steps: int = 1000,
@@ -181,13 +181,13 @@ class Flow(nn.Module):
         return_intermediates: bool = False,
         enable_grad: bool = False,
         **model_extras: dict,
-    ) -> Union[Sequence[Tensor], Sequence[List[Tensor]]]:
+    ) -> Union[List[Tensor], List[List[Tensor]]]:
         """
         Generate samples for each modality using the inference scheduler.
 
         Args:
-            x_init (Sequence[Tensor]):
-                Sequence of tensors, one per modality, containing the initial states at time 0.
+            x_init (List[Tensor]):
+                List of tensors, one per modality, containing the initial states at time 0.
                 For continuous modalities, this is typically Gaussian noise.
                 For discrete modalities, this is typically samples from a uniform categorical distribution.
             time_grid (Optional[Tensor]): Optional tensor of time points defining the interval.
@@ -208,7 +208,7 @@ class Flow(nn.Module):
             **model_extras (dict): Additional keyword arguments to pass to the model.
 
         Returns:
-            Union[Sequence[Tensor], Sequence[List[Tensor]]]: A list where each element corresponds to a modality.
+            Union[List[Tensor], List[List[Tensor]]]: A list where each element corresponds to a modality.
             Each element is either a tensor of shape ``(batch_size, ...)`` containing the samples,
             or a list of tensors (if `return_intermediates` is True in `MultimodalSolver.sample`).
         """
