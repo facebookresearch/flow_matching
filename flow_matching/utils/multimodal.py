@@ -213,6 +213,7 @@ class Flow(nn.Module):
             or a list of tensors (if `return_intermediates` is True in `MultimodalSolver.sample`).
         """
         # Validate samples for each modality.
+        x_init = x_init if isinstance(x_init, list) else list(x_init)
         for i, name in enumerate(self.paths):
             path = self.paths[name]
 
