@@ -10,3 +10,4 @@ API Reference
    flow_matching.solver
    flow_matching.utils.model_wrapper
    flow_matching.utils.manifolds
+   flow_matching.utils.multimodal
