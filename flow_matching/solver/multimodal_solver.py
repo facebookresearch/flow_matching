@@ -6,7 +6,7 @@
 
 from contextlib import nullcontext
 from math import ceil
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Sequence, Union
 
 import torch
 from torch import Tensor
@@ -97,7 +97,7 @@ class MultimodalSolver(Solver):
 
     def sample(
         self,
-        x_init: List[Tensor],
+        x_init: Sequence[Tensor],
         step_size: Optional[float],
         div_free: Union[float, Callable[[float], float]] = 0.0,
         method: str = "euler",
@@ -106,11 +106,11 @@ class MultimodalSolver(Solver):
         enable_grad: bool = False,
         verbose: bool = False,
         **model_extras: dict,
-    ) -> Union[List[Tensor], List[List[Tensor]]]:
+    ) -> Union[Sequence[Tensor], Sequence[List[Tensor]]]:
         """Sample all modalities simultaneously.
 
         Args:
-            x_init (List[Tensor]): Initial states for each modality.
+            x_init (Sequence[Tensor]): Initial states for each modality.
             step_size (Optional[float]): Fixed step size for uniform discretization.
                 If ``None``, the discretization is taken from ``time_grid``.
             div_free (Union[float, Callable[[float], float]]): The coefficient
@@ -134,7 +134,7 @@ class MultimodalSolver(Solver):
             TypeError: If the model's output does not match the expected format.
 
         Returns:
-            Union[List[Tensor], List[List[Tensor]]]: If ``return_intermediates`` is
+            Union[Sequence[Tensor], Sequence[List[Tensor]]]: If ``return_intermediates`` is
             ``False`` (default), returns a list of final state tensors, one per
             modality. If ``True``, returns a list where each element is another
             list of tensors representing the trajectory for a modality.
@@ -183,8 +183,8 @@ class MultimodalSolver(Solver):
                     time_grid=time_grid, t_discretization=t_discretization
                 )
 
-        states: List[Tensor] = [(x if enable_grad else x.clone()) for x in x_init]
-        intermediates: List[List[Tensor]] = (
+        states: Sequence[Tensor] = [(x if enable_grad else x.clone()) for x in x_init]
+        intermediates: Sequence[List[Tensor]] = (
             [[x if enable_grad else x.clone()] for x in x_init]
             if return_intermediates
             else []
