@@ -96,13 +96,31 @@ class Flow(nn.Module):
             self.loss_fns[name] = loss_fn
             self.loss_weights[name] = spec.get("weight", 1.0)
 
+        # Set up Euler solver for each modality.
+        modality_configs = [
+            {
+                "name": name,
+                "type": (
+                    "discrete"
+                    if isinstance(path, MixtureDiscreteProbPath)
+                    else "continuous"
+                ),
+                "path": path,
+            }
+            for name, path in self.paths.items()
+        ]
+        self.solver = MultimodalSolver(
+            model=self.model,
+            modality_configs=modality_configs,
+        )
+
     def training_loss(
         self,
         x_1: Sequence[Tensor],
         x_t: Sequence[Tensor],
         dx_t: Sequence[Tensor],
         t: Sequence[Tensor],
-        logits: Optional[Sequence[Tensor]] = None,
+        model_output: Optional[Sequence[Tensor]] = None,
         detach_loss_dict: bool = True,
         **model_extras: dict,
     ) -> Tuple[Sequence[Tensor], Dict[str, Tensor]]:
@@ -118,7 +136,7 @@ class Flow(nn.Module):
                 containing the velocity field at time t.
             t (Sequence[Tensor]): Sequence of tensors, one per modality,
                 containing the time values.
-            logits (Optional[Sequence[Tensor]]): Optional precomputed model outputs.
+            model_output (Optional[Sequence[Tensor]]): Optional precomputed model outputs.
                 If provided, these are used instead of calling the model.
             detach_loss_dict (bool): If ``True``, detaches individual modality losses
                 from the computation graph when storing them in the loss dictionary.
@@ -134,15 +152,15 @@ class Flow(nn.Module):
             len(x_1) == len(x_t) == len(dx_t) == len(t) == len(self.paths)
         ), "Input sequences must match the number of modalities."
 
-        if logits is not None:
-            assert len(logits) == len(
+        if model_output is not None:
+            assert len(model_output) == len(
                 self.paths
-            ), "If provided, logits must match the number of modalities."
+            ), "If provided, model outputs must match the number of modalities."
 
         loss_dict = {}
         total_loss = 0.0
 
-        logits = logits or self.model(x_t, t, **model_extras)
+        model_output = model_output or self.model(x_t, t, **model_extras)
 
         for i, name in enumerate(self.paths):
             path = self.paths[name]
@@ -154,16 +172,16 @@ class Flow(nn.Module):
                     f"Expected integer tensor for discrete modality '{name}', "
                     f"got {x_t[i].dtype}",
                 )
-                loss = loss_fn(logits[i], x_1[i], x_t[i], t[i])
+                loss = loss_fn(model_output[i], x_1[i], x_t[i], t[i])
             else:
                 # Continuous case: model returns velocity field.
-                assert x_t[i].dtype == torch.float32, (
+                assert x_t[i].is_floating_point(), (
                     f"Expected float tensor for continuous modality '{name}', "
                     f"got {x_t[i].dtype}",
                 )
-                loss = loss_fn(logits[i], dx_t[i])
+                loss = loss_fn(model_output[i], dx_t[i])
 
-            weight = self.loss_weights.get(name, 1.0)
+            weight = self.loss_weights[name]
             loss_dict[name] = (loss.detach() if detach_loss_dict else loss) * weight
             total_loss = total_loss + loss.mean() * weight
 
@@ -223,36 +241,18 @@ class Flow(nn.Module):
                     f"got {x_init[i].dtype}",
                 )
             else:
-                assert x_init[i].dtype == torch.float32, (
+                assert x_init[i].is_floating_point(), (
                     f"Expected float tensor for continuous modality '{name}', "
                     f"got {x_init[i].dtype}",
                 )
 
             x_init[i] = x_init[i].to(device)
 
-        # Set up Euler solver for each modality.
-        modality_configs = [
-            {
-                "name": name,
-                "type": (
-                    "discrete"
-                    if isinstance(path, MixtureDiscreteProbPath)
-                    else "continuous"
-                ),
-                "path": path,
-            }
-            for name, path in self.paths.items()
-        ]
-        solver = MultimodalSolver(
-            model=self.model,
-            modality_configs=modality_configs,
-        )
-
         # Solve to obtain multimodal samples at time 1.
         step_size = step_size or (1.0 / steps)
         time_grid = time_grid or torch.linspace(0.0, 1.0, steps, device=device)
 
-        samples = solver.sample(
+        samples = self.solver.sample(
             x_init=x_init,
             step_size=step_size,
             div_free=div_free,

@@ -242,7 +242,11 @@ class MultimodalSolver(Solver):
 
                             # Compute u_t(x|x_t,x_1)
                             path: MixtureDiscreteProbPath = config["path"]
-                            scheduler_output = path.scheduler(t=t[idx][:, None, None])
+
+                            t_expanded = t[idx].reshape(
+                                -1, *[1] * (model_output.dim() - 1)
+                            )
+                            scheduler_output = path.scheduler(t=t_expanded)
 
                             k_t = scheduler_output.alpha_t
                             d_k_t = scheduler_output.d_alpha_t

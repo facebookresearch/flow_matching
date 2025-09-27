@@ -51,7 +51,7 @@ class DummyMultimodalSolver:
     def sample(self, **kwargs):
         self.called_with = kwargs
         # Return a list of tensors matching the number of modalities
-        return [torch.tensor([1.0]), torch.tensor([2.0])]
+        return [torch.tensor([1]), torch.tensor([2.0])]
 
 
 class TestFlow(unittest.TestCase):
@@ -139,11 +139,14 @@ class TestFlow(unittest.TestCase):
             "flow_matching.utils.multimodal.MultimodalSolver",
             DummyMultimodalSolver,
         ):
+            self.flow = Flow(
+                model=self.model, modalities=self.modalities
+            )  # Reinitialize to use dummy solver
             samples = self.flow.sample([x_init_disc, x_init_cont], steps=5)
 
         # Should receive the dummy solver's output
         self.assertEqual(len(samples), 2)
-        self.assertTrue(torch.equal(samples[0], torch.tensor([1.0])))
+        self.assertTrue(torch.equal(samples[0], torch.tensor([1])))
         self.assertTrue(torch.equal(samples[1], torch.tensor([2.0])))
 
     def test_sample_wrong_dtype_raises(self):
@@ -211,7 +214,7 @@ class TestFlow(unittest.TestCase):
             side_effect=AssertionError("Model forward should not be called"),
         ):
             total_loss, loss_dict = self.flow.training_loss(
-                x_1, x_t, dx_t, t, logits=logits
+                x_1, x_t, dx_t, t, model_output=logits
             )
 
         # Verify total loss is scalar and matches sum of individual losses
