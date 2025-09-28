@@ -47,14 +47,25 @@ class MultimodalSolver(Solver):
         modality_configs (List[Dict[str, Any]]):
             A list of configuration dictionaries, one for each modality.
             Each dictionary must have a ``'type'`` key, which is either
-            ``'continuous'`` or ``'discrete'``. Discrete modality configs must
-            also provide a ``'path'`` key with a `MixtureDiscreteProbPath` object.
+            ``'continuous'`` or ``'discrete'``. Discrete modality configs may
+            provide a ``'dtype_categorical'`` key with the desired data type
+            for categorical logit sampling (e.g., ``torch.float32``) and
+            must provide a ``'path'`` key with a `MixtureDiscreteProbPath`
+            instance. Continuous modality configs must provide a ``'path'``
+            key with a `ProbPath` instance
+            (e.g., `AffineProbPath(scheduler=CondOTScheduler())`) as well as
+            an ``'x_1_prediction'`` key which is either ``True`` or ``False``.
+            If ``True``, the model is expected to predict the clean data `x_1`
+            for that modality, and such predictions will be reparameterized
+            as velocities during the sampling process. If ``False``, the model
+            is expected to predict the velocities directly.
         source_distribution_p (Optional[Tensor], optional): Source distribution,
             must be of shape [vocabulary_size]. Required only when divergence-free
             term for the probability velocity is non-zero. Defaults to None.
 
     Raises:
-        TypeError: If `model` is not callable.
+        TypeError: If ``model`` is not callable or if ``modality_configs``
+            is not a list of dictionaries.
     """
 
     def __init__(
@@ -93,6 +104,19 @@ class MultimodalSolver(Solver):
                 if not isinstance(config["path"], MixtureDiscreteProbPath):
                     raise TypeError(
                         f"'path' for discrete modality {i} must be a MixtureDiscreteProbPath instance."
+                    )
+            if config["type"] == "continuous":
+                if "path" not in config:
+                    raise ValueError(
+                        f"Continuous modality {i} requires a 'path' in its config."
+                    )
+                if "x_1_prediction" not in config:
+                    raise ValueError(
+                        f"Continuous modality {i} requires an 'x_1_prediction' key in its config."
+                    )
+                if not isinstance(config["x_1_prediction"], bool):
+                    raise TypeError(
+                        f"'x_1_prediction' for continuous modality {i} must be a boolean."
                     )
 
     def sample(
@@ -221,7 +245,16 @@ class MultimodalSolver(Solver):
 
                     if config["type"] == "continuous":
                         # Sample x_{t+h} = x_t + h * v(x_t,t)
-                        states[idx] = states[idx] + h * model_output
+                        path = config["path"]
+                        velocity_output = (
+                            path.target_to_velocity(
+                                x_1=model_output, x_t=states[idx], t=t[idx]
+                            )
+                            if config["x_1_prediction"]
+                            else model_output
+                        )
+
+                        states[idx] = states[idx] + h * velocity_output
 
                     elif config["type"] == "discrete":
                         dtype = config.get("dtype_categorical", torch.float32)

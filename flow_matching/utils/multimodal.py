@@ -69,6 +69,10 @@ class Flow(nn.Module):
                 - "loss" (optional): A callable loss function. If omitted, a default loss is chosen
                 based on the path type.
                 - "weight" (optional): A float weight for the modality's training loss. Defaults to 1.0.
+                - "x_1_prediction" (continuous paths only, optional): If True, the model is expected to predict
+                the clean data `x_1` for that modality, and such predictions will be reparameterized
+                as velocities during the sampling process. If False, the model is expected to predict
+                the velocities directly. Defaults to False.
     """
 
     def __init__(
@@ -97,7 +101,7 @@ class Flow(nn.Module):
             self.loss_weights[name] = spec.get("weight", 1.0)
 
         # Set up Euler solver for each modality.
-        modality_configs = [
+        self.modality_configs = [
             {
                 "name": name,
                 "type": (
@@ -106,12 +110,13 @@ class Flow(nn.Module):
                     else "continuous"
                 ),
                 "path": path,
+                "x_1_prediction": modalities[name].get("x_1_prediction", False),
             }
             for name, path in self.paths.items()
         ]
         self.solver = MultimodalSolver(
             model=self.model,
-            modality_configs=modality_configs,
+            modality_configs=self.modality_configs,
         )
 
     def training_loss(
@@ -165,6 +170,7 @@ class Flow(nn.Module):
         for i, name in enumerate(self.paths):
             path = self.paths[name]
             loss_fn = self.loss_fns[name]
+            modality_config = self.modality_configs[i]
 
             if isinstance(path, MixtureDiscreteProbPath):
                 # Discrete case: model should output logits.
@@ -179,7 +185,10 @@ class Flow(nn.Module):
                     f"Expected float tensor for continuous modality '{name}', "
                     f"got {x_t[i].dtype}",
                 )
-                loss = loss_fn(model_output[i], dx_t[i])
+                loss = loss_fn(
+                    model_output[i],
+                    x_1[i] if modality_config["x_1_prediction"] else dx_t[i],
+                )
 
             weight = self.loss_weights[name]
             loss_dict[name] = (loss.detach() if detach_loss_dict else loss) * weight

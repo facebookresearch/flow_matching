@@ -7,17 +7,11 @@ import unittest
 from unittest.mock import patch
 
 import torch
-from flow_matching.path.mixture import MixtureDiscreteProbPath
-from flow_matching.path.scheduler import PolynomialConvexScheduler
+from flow_matching.path import AffineProbPath, MixtureDiscreteProbPath
+from flow_matching.path.scheduler import CondOTScheduler, PolynomialConvexScheduler
 
 from flow_matching.utils.multimodal import _default_continuous_loss, Flow
 from torch import nn
-
-
-class DummyContinuousPath:
-    """Simple placeholder for a continuous path."""
-
-    pass
 
 
 class DummyModel(nn.Module):
@@ -60,7 +54,7 @@ class TestFlow(unittest.TestCase):
         self.discrete_path = MixtureDiscreteProbPath(
             scheduler=PolynomialConvexScheduler(n=2.0)
         )
-        self.continuous_path = DummyContinuousPath()
+        self.continuous_path = AffineProbPath(scheduler=CondOTScheduler())
         self.modalities = {
             "disc": {"path": self.discrete_path},
             "cont": {"path": self.continuous_path},
@@ -187,6 +181,45 @@ class TestFlow(unittest.TestCase):
         # Verify that loss_weights are stored correctly
         self.assertEqual(flow.loss_weights["disc"], 0.5)
         self.assertEqual(flow.loss_weights["cont"], 2.0)
+
+    def test_training_loss_x1_prediction_true(self):
+        # Define a custom continuous loss that returns the target tensor.
+        def custom_continuous_loss(pred, target, reduction="none"):
+            # Return the target directly to verify it's used.
+            return target
+
+        # Set up modalities with x_1_prediction enabled for the continuous path.
+        modalities = {
+            "disc": {"path": self.discrete_path},
+            "cont": {
+                "path": self.continuous_path,
+                "loss": custom_continuous_loss,
+                "x_1_prediction": True,
+            },
+        }
+        flow = Flow(model=self.model, modalities=modalities)
+
+        # Prepare inputs.
+        batch = 3
+        x1_disc = torch.randint(0, self.num_classes, (batch,))
+        x_t_disc = torch.randint(0, self.num_classes, (batch,))
+        x1_cont = torch.randn(batch, 2)
+        x_t_cont = torch.randn(batch, 2)
+        dx_t_cont = torch.randn(
+            batch, 2
+        )  # Should be ignored due to x_1_prediction=True
+        x_1 = [x1_disc, x1_cont]
+        x_t = [x_t_disc, x_t_cont]
+        dx_t = [None, dx_t_cont]
+        t = [torch.rand(batch), torch.rand(batch)]
+
+        total_loss, loss_dict = flow.training_loss(x_1, x_t, dx_t, t)
+
+        # The continuous loss should have used x1_cont as the target.
+        self.assertTrue(torch.allclose(loss_dict["cont"], x1_cont))
+        # Total loss should be sum of discrete loss mean and x1_cont mean.
+        expected_total = loss_dict["disc"].mean() + loss_dict["cont"].mean()
+        self.assertTrue(torch.allclose(total_loss, expected_total))
 
     def test_training_loss_with_logits_argument(self):
         batch = 3

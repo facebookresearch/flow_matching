@@ -7,8 +7,8 @@ import unittest
 from unittest.mock import MagicMock
 
 import torch
-from flow_matching.path import MixtureDiscreteProbPath
-from flow_matching.path.scheduler import PolynomialConvexScheduler
+from flow_matching.path import AffineProbPath, MixtureDiscreteProbPath
+from flow_matching.path.scheduler import CondOTScheduler, PolynomialConvexScheduler
 
 from flow_matching.solver.multimodal_solver import MultimodalSolver
 from flow_matching.utils import ModelWrapper
@@ -47,7 +47,11 @@ class DiscreteLogitsModel(ModelWrapper):
 class TestMultimodalSolver(unittest.TestCase):
     def setUp(self):
         # Continuous modality config (no extra args needed)
-        self.continuous_cfg = {"type": "continuous"}
+        self.continuous_cfg = {
+            "type": "continuous",
+            "path": AffineProbPath(scheduler=CondOTScheduler()),
+            "x_1_prediction": False,
+        }
 
         # Discrete modality config
         self.vocab_size = 3
