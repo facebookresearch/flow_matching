@@ -243,12 +243,16 @@ class MultimodalSolver(Solver):
                 for idx, config in enumerate(self.modality_configs):
                     model_output = outputs[idx]
 
+                    t_expanded = t[idx].reshape(
+                        -1, *[1] * (model_output.dim() - 1)
+                    )  # Expand t to match model_output shape
+
                     if config["type"] == "continuous":
                         # Sample x_{t+h} = x_t + h * v(x_t,t)
                         path = config["path"]
                         velocity_output = (
                             path.target_to_velocity(
-                                x_1=model_output, x_t=states[idx], t=t[idx]
+                                x_1=model_output, x_t=states[idx], t=t_expanded
                             )
                             if config["x_1_prediction"]
                             else model_output
@@ -275,10 +279,6 @@ class MultimodalSolver(Solver):
 
                             # Compute u_t(x|x_t,x_1)
                             path: MixtureDiscreteProbPath = config["path"]
-
-                            t_expanded = t[idx].reshape(
-                                -1, *[1] * (model_output.dim() - 1)
-                            )
                             scheduler_output = path.scheduler(t=t_expanded)
 
                             k_t = scheduler_output.alpha_t
@@ -291,7 +291,7 @@ class MultimodalSolver(Solver):
 
                             # Add divergence-free part
                             div_free_t = (
-                                div_free(t[idx]) if callable(div_free) else div_free
+                                div_free(t_expanded) if callable(div_free) else div_free
                             )
 
                             if div_free_t > 0:
