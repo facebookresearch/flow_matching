@@ -6,7 +6,6 @@
 
 from .categorical_sampler import categorical
 from .model_wrapper import ModelWrapper
-from .multimodal import Flow
 from .utils import expand_tensor_like, gradient, unsqueeze_to_match
 
 __all__ = [
@@ -14,6 +13,5 @@ __all__ = [
     "expand_tensor_like",
     "gradient",
     "categorical",
-    "Flow",
     "ModelWrapper",
 ]
