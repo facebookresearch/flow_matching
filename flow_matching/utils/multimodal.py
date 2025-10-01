@@ -259,7 +259,11 @@ class Flow(nn.Module):
 
         # Solve to obtain multimodal samples at time 1.
         step_size = step_size or (1.0 / steps)
-        time_grid = time_grid or torch.linspace(0.0, 1.0, steps, device=device)
+        time_grid = (
+            time_grid
+            if time_grid is not None
+            else torch.linspace(0.0, 1.0, steps, device=device)
+        )
 
         samples = self.solver.sample(
             x_init=x_init,
