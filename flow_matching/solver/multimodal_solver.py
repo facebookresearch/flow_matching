@@ -62,6 +62,9 @@ class MultimodalSolver(Solver):
         source_distribution_p (Optional[Tensor], optional): Source distribution,
             must be of shape [vocabulary_size]. Required only when divergence-free
             term for the probability velocity is non-zero. Defaults to None.
+        model_sampling_fn (str, optional): If ``model`` is a class instance
+            with multiple methods, this specifies the method to use for
+            forward passes during sampling. Defaults to ``"forward"``.
 
     Raises:
         TypeError: If ``model`` is not callable or if ``modality_configs``
@@ -73,6 +76,7 @@ class MultimodalSolver(Solver):
         model: Union[ModelWrapper, Callable],
         modality_configs: List[Dict[str, Any]],
         source_distribution_p: Optional[Tensor] = None,
+        model_sampling_fn: str = "forward",
     ):
         super().__init__()
         if not callable(model):
@@ -80,6 +84,7 @@ class MultimodalSolver(Solver):
         self.model = model
         self.modality_configs = modality_configs
         self.source_distribution_p = source_distribution_p
+        self.model_sampling_fn = model_sampling_fn
 
         self._validate_configs()
 
@@ -231,7 +236,8 @@ class MultimodalSolver(Solver):
                 t = [t_discretization[i : i + 1].repeat(batch_size)] * len(states)
                 h = t_discretization[i + 1 : i + 2] - t_discretization[i : i + 1]
 
-                outputs = self.model(states, t, **model_extras)
+                model_fn = getattr(self.model, self.model_sampling_fn, self.model)
+                outputs = model_fn(states, t, **model_extras)
 
                 if not isinstance(outputs, (list, tuple)) or len(outputs) != len(
                     states

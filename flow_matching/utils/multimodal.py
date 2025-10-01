@@ -73,12 +73,16 @@ class Flow(nn.Module):
                 the clean data `x_1` for that modality, and such predictions will be reparameterized
                 as velocities during the sampling process. If False, the model is expected to predict
                 the velocities directly. Defaults to False.
+        model_sampling_fn (str, optional): If ``model`` is a class instance
+            with multiple methods, this specifies the method to use for
+            forward passes during sampling. Defaults to ``"forward"``.
     """
 
     def __init__(
         self,
         model: nn.Module,
         modalities: Dict[str, Dict[str, Any]],
+        model_sampling_fn: str = "forward",
     ) -> None:
         super().__init__()
         self.model = model
@@ -117,6 +121,7 @@ class Flow(nn.Module):
         self.solver = MultimodalSolver(
             model=self.model,
             modality_configs=self.modality_configs,
+            model_forward_fn=model_sampling_fn,
         )
 
     def training_loss(
