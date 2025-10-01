@@ -207,6 +207,7 @@ class Flow(nn.Module):
         method: MULTIMODAL_METHOD = "euler",
         return_intermediates: bool = False,
         enable_grad: bool = False,
+        verbose: bool = False,
         **model_extras: dict,
     ) -> Union[Sequence[Tensor], Sequence[List[Tensor]]]:
         """
@@ -232,6 +233,7 @@ class Flow(nn.Module):
             return_intermediates (bool): If ``True``, returns a list of tensors for
                 each modality containing the state at each intermediate time step.
             enable_grad (bool): Whether to enable gradient tracking during integration.
+            verbose (bool): If ``True``, prints progress during sampling.
             **model_extras (dict): Additional keyword arguments to pass to the model.
 
         Returns:
@@ -273,6 +275,7 @@ class Flow(nn.Module):
             time_grid=time_grid,
             return_intermediates=return_intermediates,
             enable_grad=enable_grad,
+            verbose=verbose,
             **model_extras,
         )
 
