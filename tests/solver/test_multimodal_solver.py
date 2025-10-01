@@ -179,7 +179,8 @@ class TestMultimodalSolver(unittest.TestCase):
     def test_divergence_free(self):
         # Use a mock model that returns zero logits for the discrete modality
         mock_model = MagicMock()
-        mock_model.return_value = [
+        mock_model.forward = MagicMock()
+        mock_model.forward.return_value = [
             torch.zeros(1, 1),
             torch.zeros(1, 1, self.vocab_size),
         ]

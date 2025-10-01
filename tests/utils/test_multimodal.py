@@ -37,9 +37,10 @@ class DummyModel(nn.Module):
 class DummyMultimodalSolver:
     """Mock solver that records arguments and returns predefined samples."""
 
-    def __init__(self, model, modality_configs):
+    def __init__(self, model, modality_configs, model_sampling_fn=None):
         self.model = model
         self.modality_configs = modality_configs
+        self.model_sampling_fn = model_sampling_fn
         self.called_with = {}
 
     def sample(self, **kwargs):

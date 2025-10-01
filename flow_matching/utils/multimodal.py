@@ -121,7 +121,7 @@ class Flow(nn.Module):
         self.solver = MultimodalSolver(
             model=self.model,
             modality_configs=self.modality_configs,
-            model_forward_fn=model_sampling_fn,
+            model_sampling_fn=model_sampling_fn,
         )
 
     def training_loss(
