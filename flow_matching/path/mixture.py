@@ -116,7 +116,7 @@ class MixtureDiscreteProbPath(ProbPath):
 
         return (d_kappa_t / (1 - kappa_t)) * (posterior - x_t)
 
-   def velocity_to_posterior(
+    def velocity_to_posterior(
         self, velocity: Tensor, x_t: Tensor, t: Tensor
     ) -> Tensor:
         r"""Invert the velocity to get the posterior logits.
