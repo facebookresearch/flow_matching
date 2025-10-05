@@ -185,6 +185,87 @@ class TestODESolver(unittest.TestCase):
             torch.allclose(x_1.grad, torch.tensor([1.0, 1.0]), atol=1e-2),
         )
 
+    def test_sample_with_likelihoods(self):
+        x_0 = torch.tensor([[1.0, 0.0]])
+        step_size = 0.001
+
+        # Define a dummy log probability function
+        def dummy_log_p(x: Tensor) -> Tensor:
+            return -0.5 * torch.sum(x**2, dim=1)
+
+        result, log_likelihood = self.dummy_solver.sample(
+            x_init=x_0,
+            step_size=step_size,
+            log_p0=dummy_log_p,
+            exact_divergence=True,
+        )
+        self.assertIsInstance(log_likelihood, Tensor)
+        self.assertEqual(x_0.shape[0], log_likelihood.shape[0])
+
+        self.assertTrue(
+            torch.allclose(torch.tensor([2.0, 1.0]), result, atol=1e-2),
+        )
+
+    def test_forward_backward_likelihoods_exact(self):
+        x_0 = torch.tensor([[1.0, 0.0]])
+        step_size = 0.001
+
+        # Define a dummy log probability function
+        def dummy_log_p(x: Tensor) -> Tensor:
+            return -0.5 * torch.sum(x**2, dim=1)
+
+        x1, forward_log_likelihood = self.dummy_solver.sample(
+            x_init=x_0,
+            step_size=step_size,
+            log_p0=dummy_log_p,
+            exact_divergence=True,
+        )
+
+        self.assertIsInstance(forward_log_likelihood, Tensor)
+        self.assertEqual(x_0.shape[0], forward_log_likelihood.shape[0])
+
+        # Check if the post-hoc likelihoods match the original log likelihoods
+        _, backward_log_likelihood = self.dummy_solver.compute_likelihood(
+            x_1=x1,
+            log_p0=dummy_log_p,
+            step_size=step_size,
+            exact_divergence=True,
+        )
+
+        self.assertTrue(
+            torch.allclose(forward_log_likelihood, backward_log_likelihood, atol=1e-2),
+        )
+
+    def test_forward_backward_likelihoods(self):
+        x_0 = torch.tensor([[1.0, 0.0]])
+        step_size = 0.001
+
+        # Define a dummy log probability function
+        def dummy_log_p(x: Tensor) -> Tensor:
+            return -0.5 * torch.sum(x**2, dim=1)
+
+        x1, forward_log_likelihood = self.dummy_solver.sample(
+            x_init=x_0,
+            step_size=step_size,
+            log_p0=dummy_log_p,
+            exact_divergence=False,
+        )
+
+        self.assertIsInstance(forward_log_likelihood, Tensor)
+        self.assertEqual(x_0.shape[0], forward_log_likelihood.shape[0])
+
+        # Check if the post-hoc likelihoods match the original log likelihoods
+        _, backward_log_likelihood = self.dummy_solver.compute_likelihood(
+            x_1=x1,
+            log_p0=dummy_log_p,
+            step_size=step_size,
+            exact_divergence=False,
+        )
+
+        self.assertTrue(
+            torch.allclose(forward_log_likelihood, backward_log_likelihood, atol=1e-2),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
