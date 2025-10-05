@@ -115,3 +115,35 @@ class MixtureDiscreteProbPath(ProbPath):
         d_kappa_t = scheduler_output.d_alpha_t
 
         return (d_kappa_t / (1 - kappa_t)) * (posterior - x_t)
+
+   def velocity_to_posterior(
+        self, velocity: Tensor, x_t: Tensor, t: Tensor
+    ) -> Tensor:
+        r"""Invert the velocity to get the posterior logits.
+
+        | given :math:`u_t`, :math:`x_t`, and :math:`t`, recover the posterior logits.
+
+        Args:
+            velocity (Tensor): velocity tensor, shape (..., vocab size).
+            x_t (Tensor): path sample at time t, shape (...).
+            t (Tensor): time in [0,1].
+
+        Returns:
+            Tensor: posterior logits.
+        """
+        vocabulary_size = velocity.shape[-1]
+        x_t_onehot = F.one_hot(x_t, num_classes=vocabulary_size)
+        t = unsqueeze_to_match(source=t, target=x_t_onehot)
+
+        scheduler_output = self.scheduler(t)
+        kappa_t = scheduler_output.alpha_t
+        d_kappa_t = scheduler_output.d_alpha_t
+
+        # Rearrange the formula: velocity = (d_kappa_t / (1 - kappa_t)) * (posterior - x_t_onehot)
+        # -> posterior = velocity * (1 - kappa_t) / d_kappa_t + x_t_onehot
+        posterior = velocity * (1 - kappa_t) / d_kappa_t + x_t_onehot
+
+        # Convert posterior probabilities to logits
+        posterior_logits = torch.log(posterior.clamp(min=1e-8))
+
+        return posterior_logits
