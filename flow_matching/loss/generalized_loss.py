@@ -4,6 +4,8 @@
 # This source code is licensed under the CC-by-NC license found in the
 # LICENSE file in the root directory of this source tree.
 
+from typing import Optional
+
 import torch
 from torch import Tensor
 from torch.nn.modules.loss import _Loss
@@ -31,7 +33,14 @@ class MixturePathGeneralizedKL(_Loss):
         super().__init__(None, None, reduction)
         self.path = path
 
-    def forward(self, logits: Tensor, x_1: Tensor, x_t: Tensor, t: Tensor) -> Tensor:
+    def forward(
+        self,
+        logits: Tensor,
+        x_1: Tensor,
+        x_t: Tensor,
+        t: Tensor,
+        jump_coefficient: Optional[Tensor] = None,
+    ) -> Tensor:
         r"""Evaluates the generalized KL loss.
 
         Args:
@@ -39,14 +48,20 @@ class MixturePathGeneralizedKL(_Loss):
             x_1 (Tensor): target data point :math:`x_1 \sim q`, shape (batch, d).
             x_t (Tensor): conditional sample at :math:`x_t \sim p_t(\cdot|x_1)`, shape (batch, d).
             t (Tensor): times in :math:`[0,1]`, shape (batch).
+            jump_coefficient (Optional[Tensor], optional): precomputed jump coefficient. If not provided, it will be computed inside this function. Shape (batch,). Defaults to None.
 
         Raises:
-            ValueError: reduction value must be one of ``'none'`` | ``'mean'`` | ``'sum'``.
+            ValueError: if ``jump_coefficient`` is not None and does not have shape (batch,).
+        Raises:
+            ValueError: if ``reduction`` is not one of 'none', 'mean', or 'sum'.
 
         Returns:
             Tensor: Generalized KL loss.
         """
         x_1_shape = x_1.shape
+
+        if jump_coefficient is not None and jump_coefficient.shape != (x_1_shape[0],):
+            raise ValueError("jump_coefficient must be a vector of shape (batch,)")
 
         # extract x_1 value of log(p_{1|t}(x|x_t)).
         log_p_1t = torch.log_softmax(logits, dim=-1)
@@ -61,7 +76,9 @@ class MixturePathGeneralizedKL(_Loss):
         scheduler_output = self.path.scheduler(t)
 
         jump_coefficient = (
-            scheduler_output.d_alpha_t / (1 - scheduler_output.alpha_t)
+            jump_coefficient
+            if jump_coefficient is not None
+            else scheduler_output.d_alpha_t / (1 - scheduler_output.alpha_t)
         )[(...,) + (None,) * (x_1.dim() - 1)]
         jump_coefficient = jump_coefficient.repeat(1, *x_1_shape[1:])
         delta_x1_xt = (x_t == x_1).to(log_p_1t.dtype)
