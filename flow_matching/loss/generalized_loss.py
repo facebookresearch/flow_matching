@@ -59,7 +59,7 @@ class MixturePathGeneralizedKL(_Loss):
         """
         x_1_shape = x_1.shape
 
-        if jump_coefficient is not None and jump_coefficient.shape != (x_1_shape[0],):
+        if jump_coefficient is not None and jump_coefficient.shape != x_1_shape[:1]:
             raise ValueError("jump_coefficient must be a vector of shape (batch,)")
 
         # extract x_1 value of log(p_{1|t}(x|x_t)).
