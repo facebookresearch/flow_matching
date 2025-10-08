@@ -16,7 +16,7 @@ from torch.nn import functional as F
 from flow_matching.path import MixtureDiscreteProbPath
 from flow_matching.solver.solver import Solver
 from flow_matching.solver.utils import get_nearest_times
-from flow_matching.utils import categorical, ModelWrapper
+from flow_matching.utils import categorical, expand_tensor_like, ModelWrapper
 
 try:
     from tqdm import tqdm
@@ -249,9 +249,10 @@ class MultimodalSolver(Solver):
                 for idx, config in enumerate(self.modality_configs):
                     model_output = outputs[idx]
 
-                    t_expanded = t[idx].reshape(
-                        -1, *[1] * (model_output.dim() - 1)
-                    )  # Expand t to match model_output shape
+                    t_expanded = expand_tensor_like(
+                        input_tensor=t[idx],
+                        expand_to=model_output,
+                    )
 
                     if config["type"] == "continuous":
                         # Sample x_{t+h} = x_t + h * v(x_t,t)
