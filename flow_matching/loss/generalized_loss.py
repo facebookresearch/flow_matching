@@ -51,9 +51,8 @@ class MixturePathGeneralizedKL(_Loss):
             jump_coefficient (Optional[Tensor], optional): precomputed jump coefficient. If not provided, it will be computed inside this function. Shape (batch,). Defaults to None.
 
         Raises:
-            ValueError: if ``jump_coefficient`` is not None and does not have shape (batch,).
-        Raises:
-            ValueError: if ``reduction`` is not one of 'none', 'mean', or 'sum'.
+            ValueError: if ``jump_coefficient`` is not None and does not have shape (batch,)
+                or if ``reduction`` is not one of 'none', 'mean', or 'sum'.
 
         Returns:
             Tensor: Generalized KL loss.
