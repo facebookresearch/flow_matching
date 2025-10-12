@@ -220,7 +220,7 @@ class AffineProbPath(ProbPath):
         return a_t * x_t + b_t * velocity
 
     def target_to_epsilon(self, x_1: Tensor, x_t: Tensor, t: Tensor) -> Tensor:
-        r"""Convert from x_1 representation to velocity.
+        r"""Convert from x_1 representation to epsilon.
 
         | given :math:`X_1`.
         | return :math:`\epsilon`.
