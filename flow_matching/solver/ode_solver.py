@@ -168,8 +168,7 @@ class ODESolver(Solver):
                     ut_dot_z = torch.einsum(
                         "ij,ij->i", ut.flatten(start_dim=1), z.flatten(start_dim=1)
                     )
-                    grad_ut_dot_z = gradient(ut_dot_z, xt,
-                                             create_graph=enable_grad)
+                    grad_ut_dot_z = gradient(ut_dot_z, xt, create_graph=enable_grad)
                     div = torch.einsum(
                         "ij,ij->i",
                         grad_ut_dot_z.flatten(start_dim=1),
