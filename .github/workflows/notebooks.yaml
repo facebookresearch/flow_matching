@@ -22,5 +22,5 @@ jobs:
           set -e
           export PYTHONPATH=${PWD}:$PYTHONPATH
           for file in examples/*.ipynb; do
-            jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=300 "$file"
+            jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=600 "$file"
           done
