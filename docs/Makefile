@@ -13,6 +13,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 links:
 	mkdir -p source/notebooks && ln -sfn $(ROOT_DIR)/../examples/standalone_flow_matching.ipynb source/notebooks/standalone_flow_matching.ipynb
 	mkdir -p source/notebooks && ln -sfn $(ROOT_DIR)/../examples/2d_discrete_flow_matching.ipynb source/notebooks/2d_discrete_flow_matching.ipynb
+	mkdir -p source/notebooks && ln -sfn $(ROOT_DIR)/../examples/2d_multimodal_flow_matching.ipynb source/notebooks/2d_multimodal_flow_matching.ipynb
 	mkdir -p source/notebooks && ln -sfn $(ROOT_DIR)/../examples/2d_riemannian_flow_matching_flat_torus.ipynb source/notebooks/2d_riemannian_flow_matching_flat_torus.ipynb
 	mkdir -p source/notebooks && ln -sfn $(ROOT_DIR)/../examples/2d_riemannian_flow_matching_sphere.ipynb source/notebooks/2d_riemannian_flow_matching_sphere.ipynb
 	ln -sfn $(ROOT_DIR)/../assets/teaser.png  source/_images/teaser.png
