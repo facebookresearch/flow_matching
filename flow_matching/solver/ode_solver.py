@@ -187,7 +187,7 @@ class ODESolver(Solver):
             sol, log_det = odeint(
                 dynamics_func,
                 y_init,
-                time_grid,
+                time_grid.to(x_1.device),
                 method=method,
                 options=ode_opts,
                 atol=atol,
