@@ -37,6 +37,8 @@ class ODESolver(Solver):
         time_grid: Tensor = torch.tensor([0.0, 1.0]),
         return_intermediates: bool = False,
         enable_grad: bool = False,
+        log_p0: Optional[Callable[[Tensor], Tensor]] = None,
+        exact_divergence: bool = False,
         **model_extras,
     ) -> Union[Tensor, Sequence[Tensor]]:
         r"""Solve the ODE with the velocity field.
@@ -73,6 +75,8 @@ class ODESolver(Solver):
             time_grid (Tensor): The process is solved in the interval [min(time_grid, max(time_grid)] and if step_size is None then time discretization is set by the time grid. May specify a descending time_grid to solve in the reverse direction. Defaults to torch.tensor([0.0, 1.0]).
             return_intermediates (bool, optional): If True then return intermediate time steps according to time_grid. Defaults to False.
             enable_grad (bool, optional): Whether to compute gradients during sampling. Defaults to False.
+            log_p0 (Optional[Callable[[Tensor], Tensor]]): If provided, the function computes the log likelihood of the source distribution at :math:`t=0`. The velocity model must be differentiable with respect to x.
+            exact_divergence (bool): Whether to compute the exact divergence or use the Hutchinson estimator.
             **model_extras: Additional input for the model.
 
         Returns:
@@ -81,16 +85,49 @@ class ODESolver(Solver):
 
         time_grid = time_grid.to(x_init.device)
 
+        # Fix the random projection for the Hutchinson divergence estimator
+        if not exact_divergence:
+            z = (torch.randn_like(x_init).to(x_init.device) < 0) * 2.0 - 1.0
+
         def ode_func(t, x):
             return self.velocity_model(x=x, t=t, **model_extras)
+
+        def dynamics_func(t, states):
+            xt = states[0]
+            with torch.set_grad_enabled(True):
+                xt.requires_grad_()
+                ut = ode_func(t, xt)
+
+                # Compute exact divergence
+                if exact_divergence:
+                    div = 0
+                    for i in range(ut.flatten(1).shape[1]):
+                        div += gradient(ut[:, i], xt, create_graph=True)[:, i].detach()
+                else:
+                    # Compute Hutchinson divergence estimator E[z^T D_x(ut) z]
+                    ut_dot_z = torch.einsum(
+                        "ij,ij->i", ut.flatten(start_dim=1), z.flatten(start_dim=1)
+                    )
+                    grad_ut_dot_z = gradient(ut_dot_z, xt)
+                    div = torch.einsum(
+                        "ij,ij->i",
+                        grad_ut_dot_z.flatten(start_dim=1),
+                        z.flatten(start_dim=1),
+                    )
+
+            return ut.detach(), div.detach()
 
         ode_opts = {"step_size": step_size} if step_size is not None else {}
 
         with torch.set_grad_enabled(enable_grad):
             # Approximate ODE solution with numerical ODE solver
             sol = odeint(
-                ode_func,
-                x_init,
+                ode_func if log_p0 is None else dynamics_func,
+                (
+                    x_init
+                    if log_p0 is None
+                    else (x_init, torch.zeros(x_init.shape[0], device=x_init.device))
+                ),
                 time_grid,
                 method=method,
                 options=ode_opts,
@@ -98,10 +135,15 @@ class ODESolver(Solver):
                 rtol=rtol,
             )
 
-        if return_intermediates:
-            return sol
-        else:
-            return sol[-1]
+        if log_p0 is not None:
+            sol, log_det = sol
+            log_likelihood = log_p0(x_init) - log_det[-1]
+            return (
+                (sol, log_likelihood)
+                if return_intermediates
+                else (sol[-1], log_likelihood)
+            )
+        return sol if return_intermediates else sol[-1]
 
     def compute_likelihood(
         self,
@@ -187,7 +229,7 @@ class ODESolver(Solver):
             sol, log_det = odeint(
                 dynamics_func,
                 y_init,
-                time_grid,
+                time_grid.to(x_1.device),
                 method=method,
                 options=ode_opts,
                 atol=atol,
