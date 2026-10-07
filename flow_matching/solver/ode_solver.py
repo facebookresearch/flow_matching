@@ -159,7 +159,9 @@ class ODESolver(Solver):
                     # Compute exact divergence
                     div = 0
                     for i in range(ut.flatten(1).shape[1]):
-                        g = gradient(ut[:, i], xt, create_graph=True)[:, i]
+                        g = gradient(
+                            ut[:, i], xt, create_graph=True, allow_unused=True
+                        )[:, i]
                         if not enable_grad:
                             g = g.detach()
                         div += g
@@ -168,7 +170,9 @@ class ODESolver(Solver):
                     ut_dot_z = torch.einsum(
                         "ij,ij->i", ut.flatten(start_dim=1), z.flatten(start_dim=1)
                     )
-                    grad_ut_dot_z = gradient(ut_dot_z, xt, create_graph=enable_grad)
+                    grad_ut_dot_z = gradient(
+                        ut_dot_z, xt, create_graph=enable_grad, allow_unused=True
+                    )
                     div = torch.einsum(
                         "ij,ij->i",
                         grad_ut_dot_z.flatten(start_dim=1),

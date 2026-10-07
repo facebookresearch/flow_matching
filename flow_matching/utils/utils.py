@@ -67,6 +67,7 @@ def gradient(
     x: Tensor,
     grad_outputs: Optional[Tensor] = None,
     create_graph: bool = False,
+    allow_unused: bool = False,
 ) -> Tensor:
     """
     Compute the gradient of the inner product of output and grad_outputs w.r.t :math:`x`.
@@ -78,13 +79,22 @@ def gradient(
             then will use a tensor of ones
         create_graph (bool): If True, graph of the derivative will be constructed, allowing
             to compute higher order derivative products. Defaults to False.
+        allow_unused (bool): If True, return zeros when output is independent of x.
+            Defaults to False.
     Returns:
         Tensor: [N, d_1, d_2, ... ]. the gradient w.r.t x.
     """
 
+    if allow_unused and x.requires_grad and not output.requires_grad:
+        return torch.zeros_like(x)
+
     if grad_outputs is None:
         grad_outputs = torch.ones_like(output).detach()
     grad = torch.autograd.grad(
-        output, x, grad_outputs=grad_outputs, create_graph=create_graph
+        output,
+        x,
+        grad_outputs=grad_outputs,
+        create_graph=create_graph,
+        allow_unused=allow_unused,
     )[0]
-    return grad
+    return torch.zeros_like(x) if grad is None else grad
