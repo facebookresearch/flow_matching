@@ -144,7 +144,7 @@ class ODESolver(Solver):
 
         # Fix the random projection for the Hutchinson divergence estimator
         if not exact_divergence:
-            z = (torch.randn_like(x_1).to(x_1.device) < 0) * 2.0 - 1.0
+            z = (torch.randn_like(x_1) < 0).to(x_1) * 2.0 - 1.0
 
         def ode_func(x, t):
             return self.velocity_model(x=x, t=t, **model_extras)
@@ -159,7 +159,9 @@ class ODESolver(Solver):
                     # Compute exact divergence
                     div = 0
                     for i in range(ut.flatten(1).shape[1]):
-                        g = gradient(ut[:, i], xt, create_graph=True)[:, i]
+                        g = gradient(
+                            ut.flatten(1)[:, i], xt, create_graph=True
+                        ).flatten(1)[:, i]
                         if not enable_grad:
                             g = g.detach()
                         div += g
@@ -180,7 +182,7 @@ class ODESolver(Solver):
                 div = div.detach()
             return ut, div
 
-        y_init = (x_1, torch.zeros(x_1.shape[0], device=x_1.device))
+        y_init = (x_1, x_1.new_zeros(x_1.shape[0]))
         ode_opts = {"step_size": step_size} if step_size is not None else {}
 
         with torch.set_grad_enabled(enable_grad):
