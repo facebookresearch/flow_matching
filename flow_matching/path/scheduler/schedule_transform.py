@@ -7,7 +7,7 @@
 from torch import Tensor
 
 from flow_matching.path.scheduler.scheduler import Scheduler
-from flow_matching.utils import ModelWrapper
+from flow_matching.utils import ModelWrapper, unsqueeze_to_match
 
 
 class ScheduleTransformedModel(ModelWrapper):
@@ -142,6 +142,9 @@ class ScheduleTransformedModel(ModelWrapper):
 
         ds_r = (sigma_t * d_sigma_r - sigma_r * d_sigma_t * dt_r) / (sigma_t * sigma_t)
 
+        s_r = unsqueeze_to_match(s_r, x)
+        ds_r = unsqueeze_to_match(ds_r, x)
+        dt_r = unsqueeze_to_match(dt_r, x)
         u_t = self.model(x=x / s_r, t=t, **extras)
         u_r = ds_r * x / s_r + dt_r * s_r * u_t
 

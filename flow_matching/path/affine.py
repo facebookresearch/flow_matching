@@ -9,7 +9,7 @@ from torch import Tensor
 from flow_matching.path.path import ProbPath
 from flow_matching.path.path_sample import PathSample
 from flow_matching.path.scheduler.scheduler import CondOTScheduler, Scheduler
-from flow_matching.utils import expand_tensor_like
+from flow_matching.utils import expand_tensor_like, unsqueeze_to_match
 
 
 class AffineProbPath(ProbPath):
@@ -115,7 +115,7 @@ class AffineProbPath(ProbPath):
         a_t = d_sigma_t / sigma_t
         b_t = (d_alpha_t * sigma_t - d_sigma_t * alpha_t) / sigma_t
 
-        return a_t * x_t + b_t * x_1
+        return unsqueeze_to_match(a_t, x_t) * x_t + unsqueeze_to_match(b_t, x_t) * x_1
 
     def epsilon_to_velocity(self, epsilon: Tensor, x_t: Tensor, t: Tensor) -> Tensor:
         r"""Convert from epsilon representation to velocity.
@@ -141,7 +141,9 @@ class AffineProbPath(ProbPath):
         a_t = d_alpha_t / alpha_t
         b_t = (d_sigma_t * alpha_t - d_alpha_t * sigma_t) / alpha_t
 
-        return a_t * x_t + b_t * epsilon
+        return (
+            unsqueeze_to_match(a_t, x_t) * x_t + unsqueeze_to_match(b_t, x_t) * epsilon
+        )
 
     def velocity_to_target(self, velocity: Tensor, x_t: Tensor, t: Tensor) -> Tensor:
         r"""Convert from velocity to x_1 representation.
@@ -167,7 +169,9 @@ class AffineProbPath(ProbPath):
         a_t = -d_sigma_t / (d_alpha_t * sigma_t - d_sigma_t * alpha_t)
         b_t = sigma_t / (d_alpha_t * sigma_t - d_sigma_t * alpha_t)
 
-        return a_t * x_t + b_t * velocity
+        return (
+            unsqueeze_to_match(a_t, x_t) * x_t + unsqueeze_to_match(b_t, x_t) * velocity
+        )
 
     def epsilon_to_target(self, epsilon: Tensor, x_t: Tensor, t: Tensor) -> Tensor:
         r"""Convert from epsilon representation to x_1 representation.
@@ -191,7 +195,9 @@ class AffineProbPath(ProbPath):
         a_t = 1 / alpha_t
         b_t = -sigma_t / alpha_t
 
-        return a_t * x_t + b_t * epsilon
+        return (
+            unsqueeze_to_match(a_t, x_t) * x_t + unsqueeze_to_match(b_t, x_t) * epsilon
+        )
 
     def velocity_to_epsilon(self, velocity: Tensor, x_t: Tensor, t: Tensor) -> Tensor:
         r"""Convert from velocity to noise representation.
@@ -217,7 +223,9 @@ class AffineProbPath(ProbPath):
         a_t = -d_alpha_t / (d_sigma_t * alpha_t - d_alpha_t * sigma_t)
         b_t = alpha_t / (d_sigma_t * alpha_t - d_alpha_t * sigma_t)
 
-        return a_t * x_t + b_t * velocity
+        return (
+            unsqueeze_to_match(a_t, x_t) * x_t + unsqueeze_to_match(b_t, x_t) * velocity
+        )
 
     def target_to_epsilon(self, x_1: Tensor, x_t: Tensor, t: Tensor) -> Tensor:
         r"""Convert from x_1 representation to velocity.
@@ -241,7 +249,7 @@ class AffineProbPath(ProbPath):
         a_t = 1 / sigma_t
         b_t = -alpha_t / sigma_t
 
-        return a_t * x_t + b_t * x_1
+        return unsqueeze_to_match(a_t, x_t) * x_t + unsqueeze_to_match(b_t, x_t) * x_1
 
 
 class CondOTProbPath(AffineProbPath):
