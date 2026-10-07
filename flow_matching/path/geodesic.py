@@ -13,8 +13,6 @@ from flow_matching.path.path import ProbPath
 
 from flow_matching.path.path_sample import PathSample
 from flow_matching.path.scheduler import ConvexScheduler
-from flow_matching.utils import expand_tensor_like
-
 from flow_matching.utils.manifolds import geodesic, Manifold
 
 
@@ -82,7 +80,8 @@ class GeodesicProbPath(ProbPath):
             PathSample: A conditional sample at :math:`X_t \sim p_t`.
         """
         self.assert_sample_shape(x_0=x_0, x_1=x_1, t=t)
-        t = expand_tensor_like(input_tensor=t, expand_to=x_1[..., 0:1]).clone()
+        # Each geodesic takes one time and broadcasts it over the manifold axes.
+        t = t.unsqueeze(-1).clone()
 
         def cond_u(x_0, x_1, t):
             path = geodesic(self.manifold, x_0, x_1)
