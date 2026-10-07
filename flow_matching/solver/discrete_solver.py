@@ -167,8 +167,6 @@ class MixtureDiscreteEulerSolver(Solver):
             )
 
             if return_intermediates:
-                # get order of intermediate steps:
-                order = torch.argsort(time_grid)
                 # Compute intermediate steps to return via nearest points in t_discretization to time_grid.
                 time_grid = get_nearest_times(
                     time_grid=time_grid, t_discretization=t_discretization
@@ -179,7 +177,10 @@ class MixtureDiscreteEulerSolver(Solver):
         res = []
 
         if return_intermediates:
-            res = [x_init.clone()]
+            # Keep one entry per requested checkpoint, including repeated times.
+            res = [None] * len(time_grid)
+            for index in (time_grid == t_discretization[0]).nonzero().flatten():
+                res[index.item()] = x_init.clone()
 
         if verbose:
             if not TQDM_AVAILABLE:
@@ -241,10 +242,11 @@ class MixtureDiscreteEulerSolver(Solver):
                         )
 
                 steps_counter += 1
-                t = t + h
+                t = t_discretization[i + 1 : i + 2]
 
-                if return_intermediates and (t in time_grid):
-                    res.append(x_t.clone())
+                if return_intermediates:
+                    for index in (time_grid == t).nonzero().flatten():
+                        res[index.item()] = x_t.clone()
 
                 if verbose:
                     ctx.n = t.item()
@@ -252,9 +254,6 @@ class MixtureDiscreteEulerSolver(Solver):
                     ctx.set_description(f"NFE: {steps_counter}")
 
         if return_intermediates:
-            if step_size is None:
-                return torch.stack(res, dim=0)
-            else:
-                return torch.stack(res, dim=0)[order]
+            return torch.stack(res, dim=0)
         else:
             return x_t
