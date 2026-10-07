@@ -17,7 +17,7 @@ class Sphere(Manifold):
 
     def expmap(self, x: Tensor, u: Tensor) -> Tensor:
         norm_u = u.norm(dim=-1, keepdim=True)
-        exp = x * torch.cos(norm_u) + u * torch.sin(norm_u) / norm_u
+        exp = x * torch.cos(norm_u) + u * torch.sinc(norm_u / torch.pi)
         retr = self.projx(x + u)
         cond = norm_u > self.EPS[norm_u.dtype]
 
