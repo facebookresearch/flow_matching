@@ -152,19 +152,20 @@ class VPScheduler(Scheduler):
         B = self.beta_max
         T = 0.5 * (1 - t) ** 2 * (B - b) + (1 - t) * b
         dT = -(1 - t) * (B - b) - b
+        variance = -torch.expm1(-T)
 
         return SchedulerOutput(
             alpha_t=torch.exp(-0.5 * T),
-            sigma_t=torch.sqrt(1 - torch.exp(-T)),
+            sigma_t=torch.sqrt(variance),
             d_alpha_t=-0.5 * dT * torch.exp(-0.5 * T),
-            d_sigma_t=0.5 * dT * torch.exp(-T) / torch.sqrt(1 - torch.exp(-T)),
+            d_sigma_t=0.5 * dT * torch.exp(-T) / torch.sqrt(variance),
         )
 
     def snr_inverse(self, snr: Tensor) -> Tensor:
-        T = -torch.log(snr**2 / (snr**2 + 1))
+        T = torch.log1p(snr.reciprocal().square())
         b = self.beta_min
         B = self.beta_max
-        t = 1 - ((-b + torch.sqrt(b**2 + 2 * (B - b) * T)) / (B - b))
+        t = 1 - 2 * T / (b + torch.sqrt(b**2 + 2 * (B - b) * T))
         return t
 
 
