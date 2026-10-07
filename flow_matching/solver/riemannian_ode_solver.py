@@ -98,7 +98,7 @@ class RiemannianODESolver(Solver):
 
             n_steps = math.ceil((t_final - t_init) / step_size)
             t_discretization = torch.tensor(
-                [step_size * i for i in range(n_steps)] + [t_final],
+                [t_init + step_size * i for i in range(n_steps)] + [t_final],
                 device=x_init.device,
             )
         # ---
