@@ -66,9 +66,9 @@ class MixturePathGeneralizedKL(_Loss):
         jump_coefficient = jump_coefficient.repeat(1, *x_1_shape[1:])
         delta_x1_xt = (x_t == x_1).to(log_p_1t.dtype)
 
-        loss = -jump_coefficient * (
-            p_1t_xt - delta_x1_xt + (1 - delta_x1_xt) * log_p_1t_x1
-        )
+        # An aligned target has no log-probability jump contribution.
+        log_jump = torch.where(x_t != x_1, log_p_1t_x1, torch.zeros_like(log_p_1t_x1))
+        loss = -jump_coefficient * (p_1t_xt - delta_x1_xt + log_jump)
 
         if self.reduction == "mean":
             return torch.mean(loss)
