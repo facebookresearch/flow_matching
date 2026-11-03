@@ -134,6 +134,13 @@ class MixtureDiscreteEulerSolver(Solver):
             verbose (bool): Whether to print progress bars. Defaults to False.
             **model_extras: Additional input for the model.
 
+        Notes:
+            When ``div_free`` is positive and ``k_t == 0`` (first step), the
+            divergence-free refresh rate is singular; the exact entrance law
+            ``(1 - k_next) * p0 + k_next * p_{1|0}`` is used instead. This
+            assumes continuity of ``c`` at 0 with ``c(0) > 0`` and an
+            ``x_init`` distributed according to the source distribution ``p``.
+
         Returns:
             Tensor: The sampled sequence of discrete values.
 
@@ -203,42 +210,55 @@ class MixtureDiscreteEulerSolver(Solver):
                 if i == n_steps - 1:
                     x_t = x_1
                 else:
-                    # Compute u_t(x|x_t,x_1)
                     scheduler_output = self.path.scheduler(t=t)
 
                     k_t = scheduler_output.alpha_t
                     d_k_t = scheduler_output.d_alpha_t
 
-                    delta_1 = F.one_hot(x_1, num_classes=self.vocabulary_size).to(
-                        k_t.dtype
-                    )
-                    u = d_k_t / (1 - k_t) * delta_1
-
-                    # Add divergence-free part
                     div_free_t = div_free(t) if callable(div_free) else div_free
 
-                    if div_free_t > 0:
-                        p_0 = self.source_distribution_p[(None,) * x_t.dim()]
-                        u = u + div_free_t * d_k_t / (k_t * (1 - k_t)) * (
-                            (1 - k_t) * p_0 + k_t * delta_1
+                    # Entrance law for k_t == 0 with active divergence-free term.
+                    # The integrated rate c * kdot / k diverges as k -> 0, so the
+                    # exact entrance law is the mixture (1 - k_next) * p0 + k_next * p_{1|0}.
+                    if div_free_t > 0 and bool(torch.all(k_t == 0)):
+                        source_probs = self.source_distribution_p.to(
+                            device=x_t.device, dtype=dtype_categorical
+                        )
+                        source_token = torch.multinomial(
+                            source_probs, x_t.numel(), replacement=True
+                        ).reshape_as(x_t)
+
+                        k_next = self.path.scheduler(t + h).alpha_t
+                        gate = torch.rand(size=x_t.shape, device=x_t.device) < k_next
+                        x_t = torch.where(gate, x_1, source_token)
+                    else:
+                        delta_1 = F.one_hot(x_1, num_classes=self.vocabulary_size).to(
+                            k_t.dtype
+                        )
+                        u = d_k_t / (1 - k_t) * delta_1
+
+                        if div_free_t > 0:
+                            p_0 = self.source_distribution_p[(None,) * x_t.dim()]
+                            u = u + div_free_t * d_k_t / (k_t * (1 - k_t)) * (
+                                (1 - k_t) * p_0 + k_t * delta_1
+                            )
+
+                        # Set u_t(x_t|x_t,x_1) = 0
+                        delta_t = F.one_hot(x_t, num_classes=self.vocabulary_size)
+                        u = torch.where(
+                            delta_t.to(dtype=torch.bool), torch.zeros_like(u), u
                         )
 
-                    # Set u_t(x_t|x_t,x_1) = 0
-                    delta_t = F.one_hot(x_t, num_classes=self.vocabulary_size)
-                    u = torch.where(
-                        delta_t.to(dtype=torch.bool), torch.zeros_like(u), u
-                    )
+                        # Sample x_t ~ u_t( \cdot |x_t,x_1)
+                        intensity = u.sum(dim=-1)  # Assuming u_t(xt|xt,x1) := 0
+                        mask_jump = torch.rand(
+                            size=x_t.shape, device=x_t.device
+                        ) < 1 - torch.exp(-h * intensity)
 
-                    # Sample x_t ~ u_t( \cdot |x_t,x_1)
-                    intensity = u.sum(dim=-1)  # Assuming u_t(xt|xt,x1) := 0
-                    mask_jump = torch.rand(
-                        size=x_t.shape, device=x_t.device
-                    ) < 1 - torch.exp(-h * intensity)
-
-                    if mask_jump.sum() > 0:
-                        x_t[mask_jump] = categorical(
-                            u[mask_jump].to(dtype=dtype_categorical)
-                        )
+                        if mask_jump.sum() > 0:
+                            x_t[mask_jump] = categorical(
+                                u[mask_jump].to(dtype=dtype_categorical)
+                            )
 
                 steps_counter += 1
                 t = t + h
