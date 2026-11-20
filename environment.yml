@@ -19,7 +19,7 @@ dependencies:
     - ufmt==2.3.0
     - flake8==7.0.0
     - ipykernel
-    - torchdiffeq
+    - torchdiffeq>=0.2.4
     - scikit-learn
     - pydoclint
     - coverage

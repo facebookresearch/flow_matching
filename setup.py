@@ -64,7 +64,7 @@ setuptools.setup(
             "pydoclint",
         ],
     },
-    install_requires=["numpy", "torch", "torchdiffeq"],
+    install_requires=["numpy", "torch", "torchdiffeq>=0.2.4"],
     license="CC-by-NC",
     classifiers=[
         # Trove classifiers

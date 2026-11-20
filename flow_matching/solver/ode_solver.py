@@ -141,6 +141,7 @@ class ODESolver(Solver):
         assert (
             time_grid[0] == 1.0 and time_grid[-1] == 0.0
         ), f"Time grid must start at 1.0 and end at 0.0. Got {time_grid}"
+        time_grid = time_grid.to(x_1.device)
 
         # Fix the random projection for the Hutchinson divergence estimator
         if not exact_divergence:
@@ -156,10 +157,12 @@ class ODESolver(Solver):
                 ut = ode_func(xt, t)
 
                 if exact_divergence:
-                    # Compute exact divergence
+                    # Compute exact divergence over the flattened non-batch dimensions
                     div = 0
-                    for i in range(ut.flatten(1).shape[1]):
-                        g = gradient(ut[:, i], xt, create_graph=True)[:, i]
+                    ut_flat = ut.flatten(start_dim=1)
+                    for i in range(ut_flat.shape[1]):
+                        g = gradient(ut_flat[:, i], xt, create_graph=True)
+                        g = g.flatten(start_dim=1)[:, i]
                         if not enable_grad:
                             g = g.detach()
                         div += g
