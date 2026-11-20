@@ -4,6 +4,7 @@
 # This source code is licensed under the CC-by-NC license found in the
 # LICENSE file in the root directory of this source tree.
 import unittest
+import warnings
 from unittest.mock import MagicMock
 
 import torch
@@ -184,6 +185,63 @@ class TestODESolver(unittest.TestCase):
         self.assertTrue(
             torch.allclose(x_1.grad, torch.tensor([1.0, 1.0]), atol=1e-2),
         )
+
+    def test_compute_likelihood_exact_divergence_multidimensional(self):
+        # A linear field u(x) = A x on the flattened state has divergence tr(A), so
+        # log p_1(x_1) = log p_0(x_0) - tr(A), whatever the shape of the state.
+        torch.manual_seed(0)
+        matrix = 0.1 * torch.randn(6, 6)
+        solver = ODESolver(velocity_model=LinearVelocityModel(matrix))
+        x_1 = torch.randn(4, 2, 3)
+
+        def log_p(x: Tensor) -> Tensor:
+            return -0.5 * x.flatten(start_dim=1).square().sum(dim=1)
+
+        x_0, log_likelihood = solver.compute_likelihood(
+            x_1=x_1, log_p0=log_p, step_size=0.1, exact_divergence=True
+        )
+        self.assertEqual(x_0.shape, x_1.shape)
+        self.assertTrue(
+            torch.allclose(log_likelihood, log_p(x_0) - torch.trace(matrix), atol=1e-5)
+        )
+        _, flat_log_likelihood = solver.compute_likelihood(
+            x_1=x_1.flatten(start_dim=1),
+            log_p0=log_p,
+            step_size=0.1,
+            exact_divergence=True,
+        )
+        self.assertTrue(torch.allclose(log_likelihood, flat_log_likelihood, atol=1e-5))
+
+    def test_compute_likelihood_default_time_grid_on_device(self):
+        if torch.cuda.is_available():
+            device = "cuda"
+        elif torch.backends.mps.is_available():
+            device = "mps"
+        else:
+            self.skipTest("No accelerator available.")
+        solver = ODESolver(velocity_model=LinearVelocityModel(torch.eye(2).to(device)))
+        x_1 = torch.randn(3, 2, device=device)
+
+        # torchdiffeq coerces a time grid on another device with a warning.
+        with warnings.catch_warnings():
+            warnings.filterwarnings("error", message="t is not on the same device")
+            x_0, log_likelihood = solver.compute_likelihood(
+                x_1=x_1,
+                log_p0=lambda x: -0.5 * x.square().sum(dim=1),
+                step_size=0.1,
+                exact_divergence=True,
+            )
+        self.assertEqual(x_0.device.type, device)
+        self.assertEqual(log_likelihood.shape, (3,))
+
+
+class LinearVelocityModel(ModelWrapper):
+    def __init__(self, matrix: Tensor):
+        super().__init__(None)
+        self.matrix = matrix
+
+    def forward(self, x: torch.Tensor, t: torch.Tensor, **extras) -> torch.Tensor:
+        return (x.flatten(start_dim=1) @ self.matrix.T).reshape(x.shape)
 
 
 if __name__ == "__main__":
